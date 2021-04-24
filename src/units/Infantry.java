@@ -1,8 +1,8 @@
 package units;
 
 public class Infantry extends Unit{
-	public Infantry(int level, int maxSoldierConunt, double idleUpkeep, double
+	public Infantry(int level, int maxSoldierCount, double idleUpkeep, double
 			marchingUpkeep, double siegeUpkeep) {
-		super(level, maxSoldierConunt, idleUpkeep, marchingUpkeep, siegeUpkeep);
+		super(level, maxSoldierCount, idleUpkeep, marchingUpkeep, siegeUpkeep);
 	}
 }

@@ -12,6 +12,7 @@ public class Army {
 	
 	public Army(String currentLocation) {
 		this.currentStatus = Status.IDLE;
+		this.units = new ArrayList<Unit>();
 		this.distancetoTarget = -1;
 		this.target = "";
 		this.currentLocation = currentLocation;

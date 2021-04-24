@@ -1,21 +1,21 @@
 package units;
 
-public class Unit {
+abstract public class Unit {
 	private int level; //READ ONLY
 	private int maxSoldierCount; //Read Only
 	private int currentSoldierCount;
 	private double idleUpkeep; //Read only
-	private double marchingUpKeep; //Read only
-	private double siegeUpKeep;//Read Only
+	private double marchingUpkeep; //Read only
+	private double siegeUpkeep;//Read Only
 	
 	
-	public Unit(int level,int maxSoldierConunt,double idleUpkeep, double
+	public Unit(int level,int maxSoldierCount,double idleUpkeep, double
 			marchingUpkeep,double siegeUpkeep) {
 		this.level = level;
-		this.marchingUpKeep = maxSoldierConunt;
+		this.maxSoldierCount = maxSoldierCount;
 		this.idleUpkeep = idleUpkeep;
-		this.marchingUpKeep = marchingUpkeep;
-		this.siegeUpKeep = siegeUpkeep;
+		this.marchingUpkeep = marchingUpkeep;
+		this.siegeUpkeep = siegeUpkeep;
 	}
 //	Getters
 	public int getLevel() {
@@ -27,14 +27,14 @@ public class Unit {
 	public int getCurrentSoldierCount() {
 		return this.currentSoldierCount;
 	}
-	public double getIdleUpKeep() {
+	public double getIdleUpkeep() {
 		return this.idleUpkeep;
 	}
-	public double getMarchingUpKeep() {
-		return this.marchingUpKeep;
+	public double getMarchingUpkeep() {
+		return this.marchingUpkeep;
 	}
-	public double getSiegeUpKeep() {
-		return this.siegeUpKeep;
+	public double getSiegeUpkeep() {
+		return this.siegeUpkeep;
 	}
 	
 //	Setters
