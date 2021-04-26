@@ -60,7 +60,7 @@ public class Game {
 	private void loadCitiesAndDistances() throws IOException {
 		String currentLine = "";
 		Set<String> set = new HashSet<String>();
-		FileReader fileReader = new FileReader("CSV_Files/distances.csv");
+		FileReader fileReader = new FileReader("distances.csv");
 		BufferedReader br = new BufferedReader(fileReader);
 		while((currentLine = br.readLine()) != null) {
 			String[] city = currentLine.split(",");
