@@ -19,12 +19,15 @@ public class Game {
 		this.currentTurnCount = 1;
 		this.loadCitiesAndDistances();
 		
+	
 		for(City city : this.availableCities) {
 			String cityName =  city.getName();
 			if(!cityName.equals(playerCity)) {
 				
 				this.loadArmy(cityName, cityName.toLowerCase() +"_army.csv");
 				
+			}else {
+				player.getControlledCities().add(new City(cityName));
 			}
 		}
 		
@@ -74,6 +77,8 @@ public class Game {
 		ArrayList<String> cavalry_values = readCSV("units_values/cavalry_values.csv");
 		ArrayList<String> infantry_values = readCSV("units_values/infantry_values.csv");
 		
+//		System.out.println(readCSV("units_values/archer_values.csv"));
+//		System.out.println(Arrays.toString(archery_values.get(1).split(",")));
 		
 		Army city_army = new Army(cityName);
 		ArrayList<Unit> armyUnits = new ArrayList<Unit>();

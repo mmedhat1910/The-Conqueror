@@ -14,6 +14,7 @@ public class City {
 	public City(String name) {
 		this.name = name;
 		this.underSiege = false;
+		this.defendingArmy = null;
 	}
 	
 	
