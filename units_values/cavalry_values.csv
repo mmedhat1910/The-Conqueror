@@ -1,0 +1,4 @@
+level,maxSoldier,idleKeep,marchkeep,siegeKeep
+1,40,0.6,0.7,0.75
+2,40,0.6,0.6,0.75
+3,60,0.7,0.8,0.9
