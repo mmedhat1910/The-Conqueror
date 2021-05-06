@@ -67,6 +67,7 @@ public class Game {
 		while((currentLine = br.readLine()) != null) {
 			list.add(currentLine);
 		}
+		br.close();
 		return list;
 	}
 	
