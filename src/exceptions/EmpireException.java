@@ -5,6 +5,6 @@ abstract public class EmpireException extends Exception {
 		super();
 	}
 	public EmpireException(String s) {
-		
+//		super(s);  SHOULD'VE WRITTEN THIS
 	}
 }
