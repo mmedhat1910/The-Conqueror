@@ -3,6 +3,7 @@ package engine;
 import java.io.*;
 import java.util.*;
 
+import exceptions.FriendlyFireException;
 import units.*;
 
 public class Game {
@@ -166,6 +167,27 @@ public class Game {
 			this.distances.add(d);
 		}
 		
+	}
+	
+	public void targetCity(Army army, String targetName) {
+		//TODO implement game:targetCity
+	}
+	
+	public void endTurn() {
+		//TODO implement game:endTurn
+	}
+	
+	public void occupy(Army a,String cityName) {
+		//TODO implement game:occupy
+	}
+	
+	public void autoResolve(Army attacker, Army defender) throws FriendlyFireException{
+		//TODO implement game:autoResolve
+	}
+	
+	public boolean isGameOver() {
+		//TODO implement game:isGameOver
+		return false;
 	}
 	
 	
