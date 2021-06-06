@@ -1,6 +1,10 @@
 package units;
 
-import java.lang.Math.*;
+import java.io.IOException;
+
+import java.util.ArrayList;
+
+import engine.Game;
 import exceptions.FriendlyFireException;
 
 abstract public class Unit {
@@ -56,7 +60,7 @@ abstract public class Unit {
 	}
 	
 	
-	public void attack(Unit target) throws FriendlyFireException{
+	public void attack(Unit target) throws FriendlyFireException, IOException{
 		if(target.getParentArmy().equals(this.parentArmy))
 			throw new FriendlyFireException("Attaching friendly army");
 		int level = this.getLevel();
@@ -68,65 +72,66 @@ abstract public class Unit {
 			
 		
 		if(this instanceof Archer) {
+			ArrayList<String> factors = Game.readCSV("attacking_factors/archer_attack.csv");
+			int factor_index;
+			
 			if(target instanceof Archer) {
-				switch(level) {
-					case 1: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.3*unitCount) ); break;
-					case 2: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.4*unitCount) ); break;
-					case 3: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.5*unitCount) ); break;
-				}
+				factor_index = level;
 			}else if (target instanceof Infantry) {
-				switch(level) {
-					case 1: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.2*unitCount) ); break;
-					case 2: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.3*unitCount) ); break;
-					case 3: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.4*unitCount) ); break;
-				}
-			}else if (target instanceof Cavalry) {
-				switch(level) {
-					case 1: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.1*unitCount) ); break;
-					case 2: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.1*unitCount) ); break;
-					case 3: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.2*unitCount) ); break;
-				}
+				factor_index = level +3;
+			}else {
+				factor_index = level + 6;
 			}
+			String[] row = factors.get(factor_index).split(",");
+			double factor = Double.parseDouble(row[2]);
+			
+			int newtargetSoldierCount = targetCount - (int) Math.ceil(factor*unitCount);
+			if(newtargetSoldierCount < 0) 
+				target.setCurrentSoldierCount(0);
+			else
+				target.setCurrentSoldierCount(newtargetSoldierCount);
+			target.getParentArmy().handleAttackedUnit(target);
+			
 		}else if(this instanceof Infantry) {
+			ArrayList<String> factors = Game.readCSV("attacking_factors/infantry_attack.csv");
+			int factor_index;
+			
 			if(target instanceof Archer) {
-				switch(level) {
-					case 1: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.3*unitCount) ); break;
-					case 2: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.4*unitCount) ); break;
-					case 3: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.5*unitCount) ); break;
-				}
+				factor_index = level;
 			}else if (target instanceof Infantry) {
-				switch(level) {
-					case 1: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.1*unitCount) ); break;
-					case 2: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.2*unitCount) ); break;
-					case 3: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.3*unitCount) ); break;
-				}
-			}else if (target instanceof Cavalry) {
-				switch(level) {
-					case 1: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.1*unitCount) ); break;
-					case 2: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.2*unitCount) ); break;
-					case 3: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.25*unitCount) ); break;
-				}
+				factor_index = level +3;
+			}else {
+				factor_index = level + 6;
 			}
+			String[] row = factors.get(factor_index).split(",");
+			double factor = Double.parseDouble(row[2]);
+			int newtargetSoldierCount = targetCount - (int) Math.ceil(factor*unitCount);
+			if(newtargetSoldierCount < 0) 
+				target.setCurrentSoldierCount(0);
+			else
+				target.setCurrentSoldierCount(newtargetSoldierCount);
+			target.getParentArmy().handleAttackedUnit(target);
 		}else if(this instanceof Cavalry) {
+			ArrayList<String> factors = Game.readCSV("attacking_factors/cavalry_attack.csv");
+			int factor_index;
+			
 			if(target instanceof Archer) {
-				switch(level) {
-					case 1: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.5*unitCount) ); break;
-					case 2: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.6*unitCount) ); break;
-					case 3: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.7*unitCount) ); break;
-				}
+				factor_index = level;
 			}else if (target instanceof Infantry) {
-				switch(level) {
-					case 1: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.3*unitCount) ); break;
-					case 2: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.4*unitCount) ); break;
-					case 3: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.5*unitCount) ); break;
-				}
-			}else if (target instanceof Cavalry) {
-				switch(level) {
-					case 1: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.2*unitCount) ); break;
-					case 2: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.2*unitCount) ); break;
-					case 3: target.setCurrentSoldierCount(targetCount - (int) Math.ceil( 0.3*unitCount) ); break;
-				}
+				factor_index = level +3;
+			}else {
+				factor_index = level + 6;
 			}
+			String[] row = factors.get(factor_index).split(",");
+			double factor = Double.parseDouble(row[2]);
+			int newtargetSoldierCount = targetCount - (int) Math.ceil(factor*unitCount);
+			if(newtargetSoldierCount < 0) 
+				target.setCurrentSoldierCount(0);
+			else
+				target.setCurrentSoldierCount(newtargetSoldierCount);
+			
+			target.getParentArmy().handleAttackedUnit(target);
+			
 		}
 		
 	}

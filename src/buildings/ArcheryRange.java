@@ -22,9 +22,7 @@ public class ArcheryRange extends MilitaryBuilding{
 		this.setUpgradeCost(700);
 		int recCost = level==2? 450:500;
 		this.setRecruitmentCost(recCost);
-		
-		
-		this.setCoolDown(true);
+		this.setCoolDown(true);		
 	}
 
 	@Override

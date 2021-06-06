@@ -9,6 +9,7 @@ import units.Status;
 import units.Unit;
 
 
+
 public class Player {
 	private String name;  //READ ONLY
 	private ArrayList<City> controlledCities; //READ ONLY
@@ -50,16 +51,15 @@ public class Player {
 	
 	public void recruitUnit(String type,String cityName) throws BuildingInCoolDownException, MaxRecruitedException, NotEnoughGoldException{
 		City city = new City("");
-		for (int i =0;i<this.getControlledCities().size();i++) {
-				if(this.getControlledCities().get(i).getName().equals(cityName)) {
-					city = this.getControlledCities().get(i);
+		for (City c: this.getControlledCities()) {
+				if(c.getName().equals(cityName)) {
+					city = c;
 					break;
 				}
 		}
 		
-		ArrayList<MilitaryBuilding> militaryBuildings = city.getMilitaryBuildings();
 		MilitaryBuilding myBuilding = null;
-		for(MilitaryBuilding building: militaryBuildings) {
+		for(MilitaryBuilding building: city.getMilitaryBuildings()) {
 			if(type.equals("Archer")) {
 				if(building instanceof ArcheryRange) {
 					myBuilding = building;
@@ -89,9 +89,9 @@ public class Player {
 	
 	public void build(String type,String cityName) throws NotEnoughGoldException{
 		City city = new City("");
-		for (int i =0;i<this.getControlledCities().size();i++) {
-				if(this.getControlledCities().get(i).getName().equals(cityName)) {
-					city = this.getControlledCities().get(i);
+		for (City c: this.getControlledCities()) {
+				if(c.getName().equals(cityName)) {
+					city = c;
 					break;
 				}
 		}
@@ -124,10 +124,14 @@ public class Player {
 	public void upgradeBuilding(Building b) throws NotEnoughGoldException, BuildingInCoolDownException, MaxLevelException{
 		if(this.getTreasury() < b.getUpgradeCost())
 			throw new NotEnoughGoldException("No gold to upgrade the building");
-		this.setTreasury(this.getTreasury() - b.getUpgradeCost());
 		b.upgrade();
+		
+		
+		this.setTreasury(this.getTreasury() - b.getUpgradeCost());
+		
 	}
 	public void initiateArmy(City city,Unit unit) {
+	
 		Army newArmy = new Army(city.getName());
 		newArmy.getUnits().add(unit);
 		city.getDefendingArmy().getUnits().remove(unit);
@@ -135,9 +139,13 @@ public class Player {
 		this.getControlledArmies().add(newArmy);
 	}
 	public void laySiege(Army army,City city) throws TargetNotReachedException, FriendlyCityException{
+		if(this.controlledCities.contains(city))
+			throw new FriendlyCityException("Laying seige on friendly city");
+		if(army.getCurrentLocation()!=city.getName())
+			throw new TargetNotReachedException(city.getName()+ " not reached yet");
 		army.setCurrentStatus(Status.BESIEGING);
 		city.setUnderSiege(true);
-		city.setTurnsUnderSiege(1);
+		city.setTurnsUnderSiege(0);
 	}
 	
 	
