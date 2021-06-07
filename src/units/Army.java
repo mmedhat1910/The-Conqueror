@@ -53,6 +53,7 @@ public class Army {
 	}
 	public void setTarget(String target) {
 		this.target = target;
+		this.currentStatus = Status.MARCHING;
 	}
 	public void setCurrentLocation(String currentLocation) {
 		this.currentLocation = currentLocation;

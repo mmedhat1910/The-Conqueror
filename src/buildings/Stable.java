@@ -15,17 +15,20 @@ public class Stable extends MilitaryBuilding{
 	public void upgrade() throws BuildingInCoolDownException, MaxLevelException{
 		if(this.isCoolDown())
 			throw new BuildingInCoolDownException("Building is cooling down");
-		int level = this.getLevel();
-		if(level == 3)
-			throw new MaxLevelException("Maximum level possible");
+		int level = this.getLevel();	
 		
-		this.setLevel(++level);
-		this.setUpgradeCost(2000);
-		int recCost = level==2? 650:700;
-		this.setRecruitmentCost(recCost);
-		
-		
-		this.setCoolDown(true);
+		if(level == 1) {
+			this.setRecruitmentCost(650);
+			this.setUpgradeCost(700);
+		}
+		if(level == 2) {
+			this.setRecruitmentCost(700);
+		}
+		if(level == 3) {
+			throw new MaxLevelException("Maximum upgrade level possible");
+		}
+		this.setLevel(level+1);
+		this.setCoolDown(true);		
 	}
 	
 	@Override
@@ -34,7 +37,7 @@ public class Stable extends MilitaryBuilding{
 		if(this.getCurrentRecruit() == this.getMaxRecruit())
 			throw new MaxRecruitedException("Cannot Recruit more from stable");
 		if(this.isCoolDown())
-			throw new BuildingInCoolDownException("Cannot recruit as cooling down");
+			throw new BuildingInCoolDownException("Cannot recruit cavalry as cooling down");
 		int maxSoldier =0; double idleKeep =0; double marchKeep = 0; double seigeKeep =0;
 		
 		switch(level) {	
