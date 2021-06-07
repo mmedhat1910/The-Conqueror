@@ -15,15 +15,16 @@ public class Barracks extends MilitaryBuilding{
 		if(this.isCoolDown())
 			throw new BuildingInCoolDownException("Building is cooling down");
 		int level = this.getLevel();
-		if(level == this.getMaxRecruit())
+		if(level == 1) {
+			this.setRecruitmentCost(550);
+			this.setUpgradeCost(1500);
+		}
+		if(level == 2) {
+			this.setRecruitmentCost(600);
+		}if(level ==3 ) {
 			throw new MaxLevelException("Maximum level possible");
-		
-		this.setLevel(++level);
-		this.setUpgradeCost(1500);
-		int recCost = level==2? 550:600;
-		this.setRecruitmentCost(recCost);
-		
-		
+		}
+		this.setLevel(level+1);		
 		this.setCoolDown(true);
 	}
 

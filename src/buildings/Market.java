@@ -11,11 +11,12 @@ public class Market extends EconomicBuilding {
 		if(this.isCoolDown())
 			throw new BuildingInCoolDownException("Building is cooling down");
 		int level = this.getLevel();
+		if(level == 1)
+			this.setUpgradeCost(1000);
 		if(level == 3)
 			throw new MaxLevelException("Maximum level possible");
 		
-		this.setLevel(++level);
-		this.setUpgradeCost(1000);
+		this.setLevel(level+1);
 		this.setCoolDown(true);
 	}
 	@Override
