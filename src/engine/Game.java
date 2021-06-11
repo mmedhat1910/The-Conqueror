@@ -287,7 +287,7 @@ public class Game {
 				defenderUnit.attack(attackerUnit);
 				attackerTurn = true;
 			}
-			this.endTurn(); //end of turn
+			
 		}
 		
 		if(defender.getUnits().size() == 0) {
