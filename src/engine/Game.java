@@ -3,7 +3,6 @@ package engine;
 import java.io.*;
 import java.util.*;
 
-import buildings.Building;
 import buildings.EconomicBuilding;
 import buildings.Farm;
 import buildings.MilitaryBuilding;
@@ -171,6 +170,9 @@ public class Game {
 	}
 	
 	public void targetCity(Army army, String targetName) {
+		if(!army.getTarget().equals(""))
+			return;
+		
 		army.setTarget(targetName);
 		Distance distanceToTarget = new Distance("", "", 0);
 		for(Distance distance: this.getDistances()) {
@@ -178,6 +180,7 @@ public class Game {
 				distanceToTarget = distance;
 		}
 		army.setDistancetoTarget(distanceToTarget.getDistance());
+		army.setCurrentStatus(Status.MARCHING);
 		
 	}
 	
@@ -209,11 +212,20 @@ public class Game {
 		
 		//updates player food after consuming food for all army
 		double updatedFood = player.getFood()-foodNeeded;
-		if(updatedFood < 0)
+		if(updatedFood <= 0) {
 			player.setFood(0);
+			
+		}
 		else
 			player.setFood(updatedFood);
 		
+		if(player.getFood() == 0) {
+			for(Army army: player.getControlledArmies())
+				for(Unit unit : army.getUnits()) {
+					unit.setCurrentSoldierCount( (int) (unit.getCurrentSoldierCount()*0.9) );
+					
+				}
+		}
 		//checks target of the player
 		for(Army a: player.getControlledArmies()) {
 			//if the army has a target then decrement target to distance by 1
@@ -222,16 +234,12 @@ public class Game {
 			if(a.getDistancetoTarget()==0) {
 				a.setCurrentLocation(a.getTarget());
 				a.setTarget("");
+				a.setDistancetoTarget(-1);
 				a.setCurrentStatus(Status.IDLE);
 			}
 		}
 		
 		
-		if(player.getFood() == 0) {
-			for(Army army: player.getControlledArmies())
-				for(Unit unit : army.getUnits())
-					unit.setCurrentSoldierCount( (int) (unit.getCurrentSoldierCount()*0.9) );
-		}
 		
 		
 		for(City city: this.getAvailableCities()) {
@@ -291,15 +299,17 @@ public class Game {
 		}
 		
 		if(defender.getUnits().size() == 0) {
-			for ( City c: this.getAvailableCities())
-				if(c.getDefendingArmy() == defender) {
+			for ( City c: this.getAvailableCities()) {
+				if(defender.getCurrentLocation().equals(c.getName())) {
 					this.occupy(attacker, c.getName());
 				}
+			}
 		}else {
-			for ( City c: this.getAvailableCities())
-				if(c.getDefendingArmy() == attacker) {
-					this.occupy(defender, c.getName());
-				}
+			for ( City c: this.getAvailableCities()) {
+				if(defender.getCurrentLocation().equals(c.getName()))
+					c.setTurnsUnderSiege(-1);
+					c.setUnderSiege(false);
+			}
 		}
 		
 		
