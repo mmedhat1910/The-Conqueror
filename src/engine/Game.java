@@ -181,6 +181,7 @@ public class Game {
 		}
 		army.setDistancetoTarget(distanceToTarget.getDistance());
 		army.setCurrentStatus(Status.MARCHING);
+		army.setCurrentLocation("onRoad");
 		
 	}
 	
