@@ -310,6 +310,12 @@ public class Game {
 					c.setTurnsUnderSiege(-1);
 					c.setUnderSiege(false);
 			}
+			for(Army a: player.getControlledArmies()) {
+				if (a == attacker) {
+					player.getControlledArmies().remove(attacker);
+				}
+			}
+				
 		}
 		
 		
@@ -331,6 +337,7 @@ public class Game {
 	
 	public static void main(String[] args) throws IOException {
 		
+		
 	}
 	
 	
@@ -338,5 +345,5 @@ public class Game {
 	
 	
 	
-	//TODO: add data to csv
+	
 }
