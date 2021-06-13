@@ -19,7 +19,7 @@ public class Stable extends MilitaryBuilding{
 		
 		if(level == 1) {
 			this.setRecruitmentCost(650);
-			this.setUpgradeCost(700);
+			this.setUpgradeCost(2000); //updated failure
 		}
 		if(level == 2) {
 			this.setRecruitmentCost(700);
