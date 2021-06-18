@@ -1,0 +1,21 @@
+.root {
+	-fx-background-image: url('file:resources/images/backgrounds/bg1.jpeg');
+	-fx-background-repeat: none;
+	-fx-background-size: cover;
+	-fx-background-position: center center;
+	-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
+}
+.image-view {
+	-fx-width:50%;
+}
+
+.text-field {
+	-fx-height : 80px;
+    -fx-prompt-text-fill: white;
+    -fx-text-fill : white;
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-border-size : 2px ;
+    -fx-border-color: white;
+    -fx-border-radius: 5px;
+    -fx-font-size: 20px;
+}

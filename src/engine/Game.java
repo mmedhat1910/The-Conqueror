@@ -13,7 +13,7 @@ public class Game {
 	private Player player;
 	private ArrayList<City> availableCities; //READ ONLY
 	private ArrayList<Distance> distances; //READ ONLY
-	private final int maxTurnCount = 30; //READ ONLY
+	private final int maxTurnCount = 50; //READ ONLY
 	private int currentTurnCount;
 	
 	public Game(String playerName,String playerCity) throws IOException {
