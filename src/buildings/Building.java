@@ -36,6 +36,7 @@ abstract public class Building {
 			throw new BuildingInCoolDownException("Building is cooling down");
 		if(this.getLevel() == 3)
 			throw new MaxLevelException("Maximum level possible");
+		coolDown = true;
 	}
 }
 

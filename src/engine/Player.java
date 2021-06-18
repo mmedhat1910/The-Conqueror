@@ -92,14 +92,12 @@ public class Player {
 		
 		
 		
+		Unit recruitedUnit = building.recruit();
 		if (this.getTreasury() < building.getRecruitmentCost())
 			throw new NotEnoughGoldException("No Enough gold to recruit " + type);
-
-		Unit recruitedUnit = building.recruit();
+		this.treasury -= building.getRecruitmentCost();
 		recruitedUnit.setParentArmy(city.getDefendingArmy());
 		city.getDefendingArmy().getUnits().add(recruitedUnit);
-		this.setTreasury(this.getTreasury() - building.getRecruitmentCost());
-		recruitedUnit.setParentArmy(city.getDefendingArmy());
 	}
 
 	public void build(String type, String cityName) throws NotEnoughGoldException {
@@ -112,18 +110,24 @@ public class Player {
 		}
 		
 
-		Building building;
-		if (type.equals("ArcheryRange")) {
+		Building building = null;
+		switch (type.toLowerCase()) {
+		case "archeryrange":
 			building = new ArcheryRange();
-		} else if (type.equals("Stable")) {
-			building =  new Stable();
-		} else if (type.equals("Barracks")) {
-			building =new Barracks();
-		} else if (type.equals("Farm")) {
-			building =new Farm();
-		} else {
-			building =  new Market();
+			break;
+		case "barracks":
+			building = new Barracks();
+			break;
+		case "stable":
+			building = new Stable();
+			break;
+		case "farm":
+			building = new Farm();
+			break;
+		case "market":
+			building = new Market();
 		}
+		
 		if (this.getTreasury() < building.getCost())
 			throw new NotEnoughGoldException("No enough gold to build " + type);
 
@@ -173,26 +177,23 @@ public class Player {
 			throw new NotEnoughGoldException("No gold to upgrade the building");
 		double upgradeCost = b.getUpgradeCost();
 		b.upgrade();
-		this.setTreasury(this.getTreasury() - upgradeCost);
-
-		
-
+		this.treasury -= upgradeCost;
 	}
 
 	public void initiateArmy(City city, Unit unit) {
 
-		Army newArmy = new Army(city.getName());
-		newArmy.getUnits().add(unit);
+		Army army = new Army(city.getName());
+		army.getUnits().add(unit);
 		city.getDefendingArmy().getUnits().remove(unit);
-		unit.setParentArmy(newArmy);
-		this.getControlledArmies().add(newArmy);
+		unit.setParentArmy(army);
+		this.controlledArmies.add(army);
 	}
 
 	public void laySiege(Army army, City city) throws TargetNotReachedException, FriendlyCityException {
 		if (this.controlledCities.contains(city))
 			throw new FriendlyCityException("Laying seige on friendly city");
-		if (army.getCurrentLocation() != city.getName())
-			throw new TargetNotReachedException(city.getName() + " not reached yet");
+		if (!army.getCurrentLocation().equals(city.getName()))
+			throw new TargetNotReachedException("Target: (" +city.getName() + ") not reached yet");
 		army.setCurrentStatus(Status.BESIEGING);
 		city.setUnderSiege(true);
 		city.setTurnsUnderSiege(0);
