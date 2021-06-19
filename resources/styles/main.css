@@ -1,6 +1,14 @@
-.root {
+.get-name-panel {
 	-fx-background-image: url('file:resources/images/backgrounds/bg1.jpeg');
-	-fx-background-repeat: none;
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+	-fx-background-position: center center;
+	-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
+}
+
+.get-city-panel {
+	-fx-background-image: url('file:resources/images/map/wood.png');
+	-fx-background-repeat: no-repeat;
 	-fx-background-size: cover;
 	-fx-background-position: center center;
 	-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
@@ -19,3 +27,19 @@
     -fx-border-radius: 5px;
     -fx-font-size: 20px;
 }
+
+.cities-map {
+	-fx-background-image: url('file:resources/images/map/map-bg.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: contain;
+	-fx-background-position: center center;
+	-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
+}
+
+
+
+
+
+
+
+
