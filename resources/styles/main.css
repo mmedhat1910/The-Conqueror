@@ -1,3 +1,8 @@
+@font-face {
+	font-family: enchanted;
+	src: url('file:resources/fonts/enchanted_land.otf');
+}
+
 .get-name-panel {
 	-fx-background-image: url('file:resources/images/backgrounds/bg1.jpeg');
 	-fx-background-repeat: no-repeat;
@@ -7,25 +12,25 @@
 }
 
 .get-city-panel {
-	-fx-background-image: url('file:resources/images/map/wood.png');
+	-fx-background-image: url('file:resources/images/backgrounds/bg1.jpeg');
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: cover;
 	-fx-background-position: center center;
 	-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
 }
 .image-view {
-	-fx-width:50%;
+	-fx-width: 50%;
 }
 
-.text-field {
-	-fx-height : 80px;
-    -fx-prompt-text-fill: white;
-    -fx-text-fill : white;
-    -fx-background-color: rgba(0,0,0,0.5);
-    -fx-border-size : 2px ;
-    -fx-border-color: white;
-    -fx-border-radius: 5px;
-    -fx-font-size: 20px;
+.name-field {
+	-fx-height: 80px;
+	-fx-prompt-text-fill: white;
+	-fx-text-fill: white;
+	-fx-background-color: rgba(0, 0, 0, 0.5);
+	-fx-border-size: 2px;
+	-fx-border-color: white;
+	-fx-border-radius: 5px;
+	-fx-font-size: 20px;
 }
 
 .cities-map {
@@ -33,13 +38,28 @@
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: contain;
 	-fx-background-position: center center;
-	-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);
+	/*-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);*/
 }
-
-
-
-
-
-
-
-
+.start-btn {
+	-fx-background-radius: 8;
+	-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #c49c4b 0%, #e0be8b 50%, #c49c4b 100%);
+	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0.5, 2, 2);
+	-fx-font-weight: bold;
+	-fx-font-size: 20px;
+	-fx-text-fill: white;
+	-fx-margin: 20px 10px;
+	-fx-cursor: pointer;
+}
+.info-bar, .action-box{
+	-fx-background-image: url('file:resources/images/map/wood.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+	-fx-background-position: center center;
+	-fx-font-family	: 'Enchanted Land';
+	
+}
+.label {
+	 -fx-text-fill: #fff;
+	 -fx-font-size : 40px;
+	 -fx-padding: 0px 10px;
+}

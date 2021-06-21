@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 public class PlayerNamePane extends BorderPane implements EventHandler<ActionEvent> {
 
@@ -30,11 +31,15 @@ public class PlayerNamePane extends BorderPane implements EventHandler<ActionEve
 		this.nameField = new TextField();
 		this.nameField.setPromptText("Enter your name");
 		this.nameField.setPrefHeight(50);
-		this.nameField.setMaxWidth(0.3*gameView.getWidth());
+		this.nameField.setMaxWidth(0.3*gameView.getStageWidth());
 		this.nameField.getStyleClass().add("name-field");
 		
 		this.nextbtn = new Button("Next");
+		this.nextbtn.getStyleClass().add("start-btn");
+		this.nextbtn.setPrefSize(150, 50);
 		this.nextbtn.setOnAction(this);
+		
+		
 		
 		VBox vbox = new VBox();
 		vbox.getChildren().add(logoView);
@@ -43,18 +48,22 @@ public class PlayerNamePane extends BorderPane implements EventHandler<ActionEve
 		vbox.setAlignment(Pos.CENTER);
 		vbox.setSpacing(30);
 		this.setCenter(vbox);
+		
 	}
 
 	@Override
 	public void handle(ActionEvent arg0) {
-		if(!nameField.getText().equals("")) {
-			String playerName = nameField.getText();
-			System.out.println(playerName);
-			gameView.setPlayerName(playerName);
-			System.out.println(gameView.getPlayerName());
+		String playerName;
+		if(nameField.getText().equals("")) 
+			playerName = "Player 1";
+					
+		else {
+			playerName = nameField.getText();
 		}
-		else
-			System.out.println("Enter a valid name");
+		this.gameView.setPlayerName(playerName);
+		System.out.println(gameView.getPlayerName());
+		this.gameView.setPane(gameView.getChooseCitypane());
+		
 		
 		
 	}

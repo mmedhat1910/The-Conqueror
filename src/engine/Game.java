@@ -6,7 +6,10 @@ import java.util.*;
 import buildings.EconomicBuilding;
 import buildings.Farm;
 import buildings.MilitaryBuilding;
+import exceptions.BuildingInCoolDownException;
 import exceptions.FriendlyFireException;
+import exceptions.MaxLevelException;
+import exceptions.NotEnoughGoldException;
 import units.*;
 
 public class Game {
@@ -22,6 +25,7 @@ public class Game {
 		this.availableCities = new ArrayList<City>();
 		this.currentTurnCount = 1;
 		this.loadCitiesAndDistances();
+		this.player.setTreasury(5000);
 		
 	
 		for(City city : this.availableCities) {
@@ -331,6 +335,30 @@ public class Game {
 	
 	
 	public static void main(String[] args) throws IOException {
+		Game g = new Game("Mohamed", "Cairo");
+		System.out.println("Player Name: "+ g.player.getName());
+		System.out.println("Food Treasury: "+ g.player.getFood() + ", "+g.player.getTreasury());
+		System.out.println(g.player.getControlledCities());
+		System.out.println(g.player.getControlledArmies());
+		try {
+			g.player.build("ArcheryRange", "Cairo");
+		} catch (NotEnoughGoldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(g.player.getControlledCities().get(0).getMilitaryBuildings().get(0).getLevel());
+		g.endTurn();
+		try {
+			g.player.getControlledCities().get(0).getMilitaryBuildings().get(0).upgrade();
+		} catch (BuildingInCoolDownException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MaxLevelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(g.player.getControlledCities().get(0).getMilitaryBuildings().get(0).getLevel());
+
 		
 		
 	}

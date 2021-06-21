@@ -19,6 +19,7 @@ public class Player {
 		this.name = name;
 		this.controlledArmies = new ArrayList<Army>();
 		this.controlledCities = new ArrayList<City>();
+
 	}
 
 //	Getters
