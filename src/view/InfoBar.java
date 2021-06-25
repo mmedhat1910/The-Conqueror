@@ -47,9 +47,9 @@ public class InfoBar extends BorderPane{
 		endTurnBtn.setOnAction(e->gameView.getListener().onEndTurn());
 		turnDataBox.getChildren().add(endTurnBtn);
 		
-//		Button exitBtn = new Button("Exit");
-//		exitBtn.setOnAction(e->gameView.close());
-//		turnDataBox.getChildren().add(exitBtn);
+		Button exitBtn = new Button("Exit");
+		exitBtn.setOnAction(e->gameView.close());
+		turnDataBox.getChildren().add(exitBtn);
 		
 		turnDataBox.setAlignment(Pos.CENTER);
 		this.setRight(turnDataBox);

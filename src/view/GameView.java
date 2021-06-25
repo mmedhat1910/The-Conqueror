@@ -3,6 +3,8 @@ package view;
 import java.util.ArrayList;
 
 import controllers.ControlListener;
+import engine.City;
+import engine.Player;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -24,6 +26,8 @@ public class GameView extends Stage implements ControlListener{
 	private ArrayList<String> availableCities; 
 	private double width;
 	private double height;
+	private ArrayList<City> controlledCities;
+	private Player player;
 	
 	
 	private double food;
@@ -172,7 +176,7 @@ public class GameView extends Stage implements ControlListener{
 
 	@Override
 	public void startGame() {
-		this.gamePane = new GamePane(this);
+		this.gamePane = new GamePane(this, this.getControlledCities().get(0));
 		updateGamePane();
 //		System.out.println(this.getTreasury());
 	}
@@ -185,6 +189,22 @@ public class GameView extends Stage implements ControlListener{
 	
 	public GamePane getGamePane() {
 		return gamePane;
+	}
+
+	public ArrayList<City> getControlledCities() {
+		return controlledCities;
+	}
+
+	public void setControlledCities(ArrayList<City> controlledCities) {
+		this.controlledCities = controlledCities;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 	

@@ -21,7 +21,7 @@ public class ChooseCityPane extends BorderPane implements EventHandler<ActionEve
 	
 
 
-	String[] cities = {"Cairo", "Roma", "Sparta"};
+	String[] cities = {"Cairo", "Rome", "Sparta"};
 	
 	
 	

@@ -101,7 +101,7 @@ public class Player {
 		city.getDefendingArmy().getUnits().add(recruitedUnit);
 	}
 
-	public void build(String type, String cityName) throws NotEnoughGoldException {
+	public Building build(String type, String cityName) throws NotEnoughGoldException {
 		City city = new City("");
 		for (City c : this.getControlledCities()) {
 			if (c.getName().equals(cityName)) {
@@ -135,34 +135,34 @@ public class Player {
 		if (building instanceof ArcheryRange) {
 			for (MilitaryBuilding b : city.getMilitaryBuildings()) {
 				if (b instanceof ArcheryRange)
-					return;
+					return null;
 			}
 			city.getMilitaryBuildings().add((ArcheryRange) building);
 
 		} else if (building instanceof Stable) {
 			for (MilitaryBuilding b : city.getMilitaryBuildings()) {
 				if (b instanceof Stable)
-					return;
+					return null;
 			}
 			city.getMilitaryBuildings().add((Stable) building);
 			
 		} else if (building instanceof Barracks) {
 			for (MilitaryBuilding b : city.getMilitaryBuildings()) {
 				if (b instanceof Barracks)
-					return;
+					return null;
 			}
 			city.getMilitaryBuildings().add((Barracks) building);
 			
 		} else if (building instanceof Farm) {
 			for (EconomicBuilding b : city.getEconomicalBuildings()) {
 				if (b instanceof Farm)
-					return;
+					return null;
 			}
 			city.getEconomicalBuildings().add((Farm) building);
 		} else if (building instanceof Market) {
 			for (EconomicBuilding b : city.getEconomicalBuildings()) {
 				if (b instanceof Market)
-					return;
+					return null;
 			}
 
 			city.getEconomicalBuildings().add((Market) building);
@@ -170,6 +170,7 @@ public class Player {
 		
 		this.setTreasury(this.getTreasury() - building.getCost());
 		building.setCoolDown(true);
+		return building;
 	}
 
 	public void upgradeBuilding(Building b)

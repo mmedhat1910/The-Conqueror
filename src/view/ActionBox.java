@@ -8,9 +8,11 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-public class ActionBox extends FlowPane{
+public class ActionBox extends FlowPane implements CityViewListener{
 	private GameView gameView;
 	private HBox detailsBox;
+	
+
 	private VBox actionButtons;
 	private TextArea statusBox;
 	
@@ -39,5 +41,44 @@ public class ActionBox extends FlowPane{
 	this.setAlignment(Pos.CENTER);
 	
 
+	}
+	
+	public HBox getDetailsBox() {
+		return detailsBox;
+	}
+
+	public void setDetailsBox(HBox detailsBox) {
+		this.detailsBox = detailsBox;
+	}
+
+	public VBox getActionButtons() {
+		return actionButtons;
+	}
+
+	public void setActionButtons(VBox actionButtons) {
+		this.actionButtons = actionButtons;
+	}
+
+	public TextArea getStatusBox() {
+		return statusBox;
+	}
+
+	public void setStatusBox(TextArea statusBox) {
+		this.statusBox = statusBox;
+	}
+
+	
+
+	@Override
+	public void onBuildingClicked(Button... buttons) {
+		this.actionButtons.getChildren().clear();
+		this.actionButtons.getChildren().addAll(buttons);
+		
+	}
+
+	@Override
+	public void onBuild(BuildingBlock b) {
+		// TODO Auto-generated method stub
+		
 	}
 }

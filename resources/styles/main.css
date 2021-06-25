@@ -63,3 +63,12 @@
 	 -fx-font-size : 40px;
 	 -fx-padding: 0px 10px;
 }
+.city-view{
+	-fx-background-image: url('file:resources/images/backgrounds/sand.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+	-fx-background-position: center center;
+}
+.button {
+	-fx-font-size: 20px;
+}

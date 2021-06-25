@@ -33,6 +33,7 @@ public class GameController extends Application implements GameViewListener{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		updateView();
 		
 	}
@@ -41,6 +42,8 @@ public class GameController extends Application implements GameViewListener{
 		this.view.setFood(model.getPlayer().getFood());
 		this.view.setTreasury(model.getPlayer().getTreasury());
 		this.view.setTurnCount(model.getCurrentTurnCount());
+		this.view.setControlledCities(model.getPlayer().getControlledCities());
+		this.view.setPlayer(this.model.getPlayer());
 		this.view.startGame();
 	}
 	
