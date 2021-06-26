@@ -23,7 +23,11 @@ public class Army {
 	public String toString() {
 		String s= "Army Location: "+ this.getCurrentLocation();
 		s+= "\nStatus: "+this.getCurrentStatus().toString();
-		s+= "\nTarget: "+this.getTarget();
+		if(!target.equals("")) {
+			s+= "\nTarget: "+this.getTarget();
+			s+= "\nTurns left to target: "+this.getDistancetoTarget();
+		}
+		
 		s+= "\nCurrent Units Count: "+this.getUnits().size();
 		return s;
 	}

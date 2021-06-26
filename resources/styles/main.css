@@ -95,3 +95,7 @@ build-dropdown > .label { -fx-text-fill: white; }
 .button {
 	-fx-font-size: 20px ;
 }
+.def-army-label{
+	-fx-font-size:15px;
+	-fx-text-fill:black;
+}

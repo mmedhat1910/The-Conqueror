@@ -12,7 +12,9 @@ public class AlertPane extends BorderPane{
 	
 		this.getStyleClass().add("alert");
 		this.setMaxWidth(width); this.setMaxHeight(height);
-		this.setCenter(new TextArea(message));
+		TextArea area = new TextArea(message);
+		area.setEditable(false);
+		this.setCenter(area);
 		this.setTop(new Label("Alert"));
 		
 		Button exit = new Button("Cancel");

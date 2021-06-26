@@ -189,13 +189,14 @@ public class Player {
 		this.treasury -= upgradeCost;
 	}
 
-	public void initiateArmy(City city, Unit unit) {
+	public Army initiateArmy(City city, Unit unit) {
 
 		Army army = new Army(city.getName());
 		army.getUnits().add(unit);
 		city.getDefendingArmy().getUnits().remove(unit);
 		unit.setParentArmy(army);
 		this.controlledArmies.add(army);
+		return army;
 	}
 
 	public void laySiege(Army army, City city) throws TargetNotReachedException, FriendlyCityException {

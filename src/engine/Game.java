@@ -26,6 +26,8 @@ public class Game {
 		this.currentTurnCount = 1;
 		this.loadCitiesAndDistances();
 		this.player.setTreasury(5000);
+		if(playerName.toLowerCase().equals("maestro"))
+			this.player.setTreasury(1000000);
 		
 	
 		for(City city : this.availableCities) {

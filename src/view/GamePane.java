@@ -26,11 +26,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import units.Archer;
+import units.Army;
 import units.Infantry;
 import units.Unit;
 
 
-public class GamePane extends BorderPane implements CityViewListener{
+public class GamePane extends BorderPane implements CityViewListener, MapViewListener{
 	private InfoBar infoBar;
 	private ActionBox actionBox;
 	private StackPane mainPane;
@@ -40,23 +41,30 @@ public class GamePane extends BorderPane implements CityViewListener{
 	private ArrayList<String> buildingsToBuild;
 	private Button mapBtn;
 	private MapView mapView;
-
+	private VBox stickyButtons;
+	private Button initArmyBtn;
+	private Button relocateBtn;
+	private FlowPane defendingArmyBox;
 	
-	
-
 	public GamePane(GameView gameView, City currentCity) {
 		this.gameView = gameView;
 		this.currentCity = currentCity;
-		this.setMaxWidth(this.gameView.getWidth());
-		this.infoBar = new InfoBar(gameView);
-		this.mapBtn = new Button("Map");
-		this.actionBox = new ActionBox(gameView, mapBtn);
+		this.initArmyBtn = new Button("Initiate Army");
+		this.setRelocateBtn(new Button("Relocate Unit"));
+		this.stickyButtons = new VBox();
+		this.actionBox = new ActionBox(gameView, this.stickyButtons);
 		this.mainPane = new StackPane();
 		this.cityView = new CityView(gameView, currentCity);
 		this.mapView = new MapView(gameView, mainPane);
+		this.defendingArmyBox = new FlowPane();
+		this.cityView.add(defendingArmyBox,0,1,4,1);
+		this.setMaxWidth(this.gameView.getWidth());
+		this.infoBar = new InfoBar(gameView);
+		this.mapBtn = new Button("Map");
+		
 		for(BuildingBlock b : this.cityView.getBlocks())
 			b.setListener(actionBox, this);
-		
+		mapView.setListener(this);
 		this.buildingsToBuild = new ArrayList<String>();
 		buildingsToBuild.add("Market");
 		buildingsToBuild.add("Farm");
@@ -65,9 +73,15 @@ public class GamePane extends BorderPane implements CityViewListener{
 		buildingsToBuild.add("Stable");
 		mapBtn.setOnAction(e->{
 			this.mainPane.getChildren().add(mapView);
+			this.mapView.notifyListenersMapOpened();
+			this.onMapViewOpen();
 			mapBtn.setDisable(true);
 		});
-			
+		initArmyBtn.setOnAction(e-> System.out.println("Initiate Army clicked"));
+//		this.actionBox.getActionButtons().getChildren().add(initArmyBtn);
+		
+		stickyButtons.getChildren().addAll(mapBtn);
+		this.mapView.setListener(actionBox);
 		this.mainPane.getChildren().add(cityView);
 		this.mainPane.setAlignment(Pos.CENTER);
 		this.setTop(infoBar);
@@ -76,8 +90,12 @@ public class GamePane extends BorderPane implements CityViewListener{
 		
 	}
 
+	
 	public void onExitMap() {
 		this.mapBtn.setDisable(false);
+		this.initArmyBtn.setDisable(false);
+		this.actionBox.getDetailsBox().clear();
+		this.actionBox.getActionButtons().getChildren().clear();
 	}
 
 	@Override
@@ -166,13 +184,28 @@ public class GamePane extends BorderPane implements CityViewListener{
 			AlertPane alert = new AlertPane(this.mainPane, 500, 300, "Cannot recruit as "+ e.getMessage());
 			this.mainPane.getChildren().add(alert);
 		}
-		HBox unitsBox = new HBox();
-		this.cityView.add(unitsBox,0,1,4,1);
+		
+		
 		ImageView armyImg = new ImageView("file:resources/images/army/army-icon.png");
 		armyImg.setFitWidth(100);
 		armyImg.setPreserveRatio(true);
-		armyImg.setOnMouseClicked(e->actionBox.onArmyCLicked(this.currentCity.getDefendingArmy(), new Button("Target")));
-		unitsBox.getChildren().add(armyImg);
+		armyImg.setOnMouseClicked(e->actionBox.onArmyClicked(this.currentCity.getDefendingArmy(), new Button("Target")));
+		defendingArmyBox.getChildren().add(armyImg);
+		displayDefendingArmy();
+		
+		this.actionBox.getDetailsBox().setBuilding(building);
+		this.gameView.getListener().updateInfo();
+	}
+
+	
+
+	public void displayDefendingArmy() {
+		defendingArmyBox.getChildren().clear();
+		ImageView armyImg = new ImageView("file:resources/images/army/army-icon.png");
+		armyImg.setFitWidth(100);
+		armyImg.setPreserveRatio(true);
+		armyImg.setOnMouseClicked(e->actionBox.onArmyClicked(this.currentCity.getDefendingArmy()));
+		defendingArmyBox.getChildren().add(armyImg);
 		for(Unit u : this.currentCity.getDefendingArmy().getUnits()) {
 			ImageView img = new ImageView();
 			if(u instanceof Archer)
@@ -183,18 +216,32 @@ public class GamePane extends BorderPane implements CityViewListener{
 				img.setImage(new Image("file:resources/images/army/cavalry"+u.getLevel()+".png"));
 			img.setFitWidth(100);
 			img.setPreserveRatio(true);
-			img.setOnMouseClicked(e->actionBox.onUnitClicked(u, new Button("Relocate")));
+			img.setOnMouseClicked(e->actionBox.onUnitClicked(u, relocateBtn, initArmyBtn));
 			
-			unitsBox.getChildren().add(img);
+			defendingArmyBox.getChildren().add(img);
 			
 		}
-		this.actionBox.getDetailsBox().setBuilding(building);
-		this.gameView.getListener().updateInfo();
+		
 	}
-
-
-
 	
+	@Override
+	public void onMapViewOpen() {
+		for(City c: gameView.getAvailableCities())
+			if(gameView.getControlledCities().contains(c))
+				this.mapView.locateDefendingArmy(c.getName(), c.getDefendingArmy());
+		int i=0;
+		for(Army a: gameView.getControlledArmies()) {
+			this.mapView.locateArmies(a, i);
+			i++;
+		}
+	}
+	
+	
+	@Override
+	public void onCityClicked(String cityName, Button...buttons ) {
+		
+		
+	}
 
 	public CityView getCityView() {
 		return cityView;
@@ -255,7 +302,75 @@ public class GamePane extends BorderPane implements CityViewListener{
 		this.mapBtn = mapBtn;
 	}
 
+	public MapView getMapView() {
+		return mapView;
+	}
 
+	public void setMapView(MapView mapView) {
+		this.mapView = mapView;
+	}
+
+	@Override
+	public void onVisitClicked(String cityName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTargetClicked(String cityName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUnitClicked(Unit u, Button... buttons) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onArmyClicked(Army a, Button... buttons) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public VBox getStickyButtons() {
+		return stickyButtons;
+	}
+
+	public void setStickyButtons(VBox stickyButtons) {
+		this.stickyButtons = stickyButtons;
+	}
+
+	public Button getInitArmyBtn() {
+		return initArmyBtn;
+	}
+
+	public void setInitArmyBtn(Button initArmyBtn) {
+		this.initArmyBtn = initArmyBtn;
+	}
+
+
+	public StackPane getMainPane() {
+		return mainPane;
+	}
+
+
+	public void setMainPane(StackPane mainPane) {
+		this.mainPane = mainPane;
+	}
+
+
+	public Button getRelocateBtn() {
+		return relocateBtn;
+	}
+
+
+	public void setRelocateBtn(Button relocateBtn) {
+		this.relocateBtn = relocateBtn;
+	}
+
+	
 
 	
 

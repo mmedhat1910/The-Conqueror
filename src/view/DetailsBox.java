@@ -19,6 +19,7 @@ public class DetailsBox extends TextArea {
 	
 	public DetailsBox() {
 		this.setText("Details Box");
+		this.setEditable(false);
 	}
 
 	public Building getBuilding() {
@@ -38,7 +39,10 @@ public class DetailsBox extends TextArea {
 	}
 
 	
-
+	public void addText(String s) {
+		String text = this.getText();
+		this.setText(text +="\n"+s);
+	}
 	public Army getArmy() {
 		return army;
 	}
