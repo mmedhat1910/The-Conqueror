@@ -39,6 +39,7 @@ public class GamePane extends BorderPane implements CityViewListener{
 	private City currentCity;
 	private ArrayList<String> buildingsToBuild;
 	private Button mapBtn;
+	private MapView mapView;
 
 	
 	
@@ -52,6 +53,7 @@ public class GamePane extends BorderPane implements CityViewListener{
 		this.actionBox = new ActionBox(gameView, mapBtn);
 		this.mainPane = new StackPane();
 		this.cityView = new CityView(gameView, currentCity);
+		this.mapView = new MapView(gameView, mainPane);
 		for(BuildingBlock b : this.cityView.getBlocks())
 			b.setListener(actionBox, this);
 		
@@ -61,7 +63,11 @@ public class GamePane extends BorderPane implements CityViewListener{
 		buildingsToBuild.add("ArcheryRange");
 		buildingsToBuild.add("Barracks");
 		buildingsToBuild.add("Stable");
-		
+		mapBtn.setOnAction(e->{
+			this.mainPane.getChildren().add(mapView);
+			mapBtn.setDisable(true);
+		});
+			
 		this.mainPane.getChildren().add(cityView);
 		this.mainPane.setAlignment(Pos.CENTER);
 		this.setTop(infoBar);
@@ -70,7 +76,9 @@ public class GamePane extends BorderPane implements CityViewListener{
 		
 	}
 
-
+	public void onExitMap() {
+		this.mapBtn.setDisable(false);
+	}
 
 	@Override
 	public void onBuildingClicked(Building b,Button... buttons) {
@@ -180,7 +188,7 @@ public class GamePane extends BorderPane implements CityViewListener{
 			unitsBox.getChildren().add(img);
 			
 		}
-		
+		this.actionBox.getDetailsBox().setBuilding(building);
 		this.gameView.getListener().updateInfo();
 	}
 

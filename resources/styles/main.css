@@ -40,6 +40,12 @@
 	-fx-background-position: center center;
 	/*-fx-effect: dropshadow(three-pass-box, black, 30, 0.5, 0, 0);*/
 }
+.map-view{
+	-fx-background-image: url('file:resources/images/map/map-background2.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+	-fx-background-position: center bottom;
+}
 .start-btn {
 	-fx-background-radius: 8;
 	-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #c49c4b 0%, #e0be8b 50%, #c49c4b 100%);

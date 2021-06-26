@@ -17,7 +17,7 @@ abstract public class Building {
 		this.setType(type);
 	}
 	public String toString() {
-		return this.type +"\nLevel: "+this.level+"\nUpgrade Cost: "+this.upgradeCost+"\nBuilding in cooldown: "+this.coolDown;
+		return this.type +"\nLevel: "+this.level+"\nUpgrade Cost: "+this.upgradeCost ;//+"\nBuilding in cooldown: "+this.coolDown;
 	}
 //	Getters
 	public int getCost() {return this.cost;}
