@@ -27,6 +27,15 @@ abstract public class Unit {
 		this.siegeUpkeep = siegeUpkeep;
 		this.currentSoldierCount = maxSoldierCount;
 	}
+	public String toString() {
+		String s= "Unit Type: "+this.getClass().getSimpleName();
+		s+= "\n ----------------------";
+		s+= "\nLevel: "+this.getLevel();
+		s+= "\nCurrent Location: "+this.getParentArmy().getCurrentLocation();
+		s+= "\nCurrent Soldier Count: "+this.getCurrentSoldierCount();
+		s+= "\nMax Soldier Count: "+this.getMaxSoldierCount();
+		return s;
+	}
 //	Getters
 	public int getLevel() {
 		return this.level;

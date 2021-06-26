@@ -56,6 +56,7 @@ public class GameView extends Stage implements ControlListener{
 
 	public void setTreasury(double treasury) {
 		this.treasury = treasury;
+	
 	}
 
 	public int getTurnCount() {
@@ -177,11 +178,15 @@ public class GameView extends Stage implements ControlListener{
 	@Override
 	public void startGame() {
 		this.gamePane = new GamePane(this, this.getControlledCities().get(0));
-		updateGamePane();
+		intitiateGamePane();
 //		System.out.println(this.getTreasury());
 	}
 	
-	public void updateGamePane() {
+	public void updateInfoBar() {
+		this.gamePane.getInfoBar().update();
+	}
+	
+	public void intitiateGamePane() {
 		setPane(gamePane);
 	}
 

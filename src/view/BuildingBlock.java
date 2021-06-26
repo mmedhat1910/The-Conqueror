@@ -7,6 +7,7 @@ import buildings.Barracks;
 import buildings.Building;
 import buildings.Farm;
 import buildings.Market;
+import buildings.MilitaryBuilding;
 import buildings.Stable;
 import engine.City;
 import engine.Player;
@@ -32,7 +33,9 @@ public class BuildingBlock {
 	private CityView cityView;
 	private ArrayList<CityViewListener> listeners;
 	
-
+	Button buildBtn;
+	Button upgradeBtn ;
+	Button recruitBtn;
 
 
 	
@@ -47,9 +50,9 @@ public class BuildingBlock {
 		this.maxWidth = gameView.getWidth()*0.19;
 		this.image = new ImageView();
 
-		Button buildBtn = new Button("Build");
-		Button upgradeBtn = new Button("Upgrade");
-		Button recruitBtn = new Button("Recruit");
+		buildBtn = new Button("Build");
+		upgradeBtn = new Button("Upgrade");
+		recruitBtn = new Button("Recruit");
 		
 		this.player = this.gameView.getPlayer();
 		this.city = this.cityView.getCity();
@@ -60,30 +63,13 @@ public class BuildingBlock {
 		});
 		
 		upgradeBtn.setOnAction(e2 -> {
-			try {
-				this.building.upgrade();
-			} catch (BuildingInCoolDownException e3) {
-				// TODO Auto-generated catch block & Add CityView Listener
-				e3.printStackTrace();
-			} catch (MaxLevelException e3) {
-				// TODO Auto-generated catch block
-				e3.printStackTrace();
-			}
+			for(CityViewListener l: this.listeners)
+				l.onUpgrade(this);
 		});
 		
 		recruitBtn.setOnAction(e3->{
-			try {
-				player.recruitUnit(buildingType, city.getName());
-			} catch (BuildingInCoolDownException e4) {
-				// TODO Auto-generated catch block
-				e4.printStackTrace();
-			} catch (MaxRecruitedException e4) {
-				// TODO Auto-generated catch block
-				e4.printStackTrace();
-			} catch (NotEnoughGoldException e4) {
-				// TODO Auto-generated catch block
-				e4.printStackTrace();
-			}
+			for(CityViewListener l: this.listeners)
+				l.onRecruit(this.building, this.buildingType);
 		});
 		
 		
@@ -95,15 +81,37 @@ public class BuildingBlock {
 		image.setOnMouseClicked(e->{
 			if(this.building == null)
 				for(CityViewListener l: this.listeners)
-					l.onBuildingClicked(buildBtn);
+					l.onBuildingClicked(this.building, buildBtn);
 			else
-				for(CityViewListener l: this.listeners)
-					l.onBuildingClicked(upgradeBtn, recruitBtn);
+				notifyListenersOnBuild();
 			
 		});
 	}
 	
 	
+	public Building startBuild() throws NotEnoughGoldException {
+		building = player.build(buildingType, city.getName());
+		if(building != null) {
+			image.setImage(getBlockImage());
+		}
+		
+		return building;
+	}
+	
+	public void upgraded() {
+		image.setImage(getBlockImage());
+		notifyListenersOnBuild();
+	}
+	
+	public void notifyListenersOnBuild() {
+		for(CityViewListener l: this.listeners) {
+			if(this.building instanceof Farm || this.building instanceof Market )
+				l.onBuildingClicked(this.building,upgradeBtn);
+			else{
+				l.onBuildingClicked(this.building,upgradeBtn, recruitBtn);
+			}
+		}
+	}
 	
 	private Image getBlockImage() {
 		String path="file:resources/images/buildings/empty-block.png";
@@ -128,16 +136,6 @@ public class BuildingBlock {
 	}
 
 
-	public void startBuild() {
-		try {
-			this.building = player.build(buildingType, city.getName());
-			if(building != null)
-				image.setImage(getBlockImage());
-		} catch (NotEnoughGoldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	
 	public Building getBuilding() {
 		return building;
@@ -177,6 +175,10 @@ public class BuildingBlock {
 		for(CityViewListener l : listeners)
 			this.listeners.add(l);
 	}
+
+
+
+	
 
 
 

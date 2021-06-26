@@ -8,7 +8,7 @@ import units.Unit;
 
 public class ArcheryRange extends MilitaryBuilding{
 	public ArcheryRange() {
-		super(1500, 800, 400);
+		super(1500, 800, 400, "Archery Range");
 	}
 	
 	public void upgrade() throws BuildingInCoolDownException, MaxLevelException{
@@ -21,6 +21,7 @@ public class ArcheryRange extends MilitaryBuilding{
 		}
 		if(level == 2) {
 			this.setRecruitmentCost(500);
+			this.setUpgradeCost(0);
 		}
 		if(level==3) {
 			throw new MaxLevelException("Max upgrade level reached");

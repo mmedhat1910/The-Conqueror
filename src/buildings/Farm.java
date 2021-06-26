@@ -5,7 +5,7 @@ import exceptions.*;
 
 public class Farm extends EconomicBuilding {
 	public Farm() {
-		super(1000, 500);
+		super(1000, 500, "Farm");
 	}
 	
 	public void upgrade() throws BuildingInCoolDownException, MaxLevelException{
@@ -15,7 +15,7 @@ public class Farm extends EconomicBuilding {
 		if(level == 1) {
 			this.setUpgradeCost(700);
 		}
-		else if(level == 3)
+		else if(level == 2)
 			throw new MaxLevelException("Maximum level possible");
 		
 		this.setLevel(level+1);

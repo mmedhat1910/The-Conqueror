@@ -20,7 +20,13 @@ public class Army {
 		this.currentLocation = currentLocation;
 		
 	}
-	
+	public String toString() {
+		String s= "Army Location: "+ this.getCurrentLocation();
+		s+= "\nStatus: "+this.getCurrentStatus().toString();
+		s+= "\nTarget: "+this.getTarget();
+		s+= "\nCurrent Units Count: "+this.getUnits().size();
+		return s;
+	}
 //	Getter
 	public Status getCurrentStatus() {
 		return this.currentStatus;

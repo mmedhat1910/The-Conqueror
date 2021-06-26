@@ -7,6 +7,7 @@ public class City {
 	private String name; //READ ONLY
 	private ArrayList<EconomicBuilding> economicalBuildings; //READ ONLY
 	private ArrayList<MilitaryBuilding> militaryBuildings; //READ ONLY
+	private ArrayList<Building> allBuildings;
 	private Army defendingArmy;
 	private int turnsUnderSiege;
 	private boolean underSiege;
@@ -18,6 +19,7 @@ public class City {
 		this.turnsUnderSiege = -1;
 		this.economicalBuildings = new ArrayList<EconomicBuilding>();
 		this.militaryBuildings = new ArrayList<MilitaryBuilding>();
+		this.allBuildings = new ArrayList<Building>();
 	}
 	
 	
@@ -50,6 +52,11 @@ public class City {
 	}
 	public void setUnderSiege(boolean underSiege) {
 		this.underSiege = underSiege;
+	}
+
+
+	public ArrayList<Building> getAllBuildings() {
+		return allBuildings;
 	}
 	
 	

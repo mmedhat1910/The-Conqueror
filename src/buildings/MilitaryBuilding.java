@@ -8,12 +8,15 @@ abstract public class MilitaryBuilding extends Building{
 	private int currentRecruit;
 	private final int maxRecruit = 3;
 	
-	public MilitaryBuilding(int cost, int upgrdeCost, int recruitmentCost) {
-		super(cost, upgrdeCost);
+	public MilitaryBuilding(int cost, int upgrdeCost, int recruitmentCost, String type) {
+		super(cost, upgrdeCost, type);
 		this.recruitmentCost = recruitmentCost;
 		
 	}
-	
+	public String toString() {
+		return super.toString() + "\nRecruitment Cost: "+this.recruitmentCost+"\nRecruitment Count: "+this.currentRecruit;
+		
+	}
 //	Getters
 	public int getRecruitmentCost() {
 		return this.recruitmentCost;

@@ -12,6 +12,7 @@ public class Player {
 	private String name; // READ ONLY
 	private ArrayList<City> controlledCities; // READ ONLY
 	private ArrayList<Army> controlledArmies; // READ ONLY
+	
 	private double treasury;
 	private double food;
 
@@ -132,12 +133,14 @@ public class Player {
 		if (this.getTreasury() < building.getCost())
 			throw new NotEnoughGoldException("No enough gold to build " + type);
 
+		
 		if (building instanceof ArcheryRange) {
 			for (MilitaryBuilding b : city.getMilitaryBuildings()) {
 				if (b instanceof ArcheryRange)
 					return null;
 			}
 			city.getMilitaryBuildings().add((ArcheryRange) building);
+			city.getAllBuildings().add((ArcheryRange) building);
 
 		} else if (building instanceof Stable) {
 			for (MilitaryBuilding b : city.getMilitaryBuildings()) {
@@ -145,6 +148,7 @@ public class Player {
 					return null;
 			}
 			city.getMilitaryBuildings().add((Stable) building);
+			city.getAllBuildings().add((Stable) building);
 			
 		} else if (building instanceof Barracks) {
 			for (MilitaryBuilding b : city.getMilitaryBuildings()) {
@@ -152,6 +156,7 @@ public class Player {
 					return null;
 			}
 			city.getMilitaryBuildings().add((Barracks) building);
+			city.getAllBuildings().add((Barracks) building);
 			
 		} else if (building instanceof Farm) {
 			for (EconomicBuilding b : city.getEconomicalBuildings()) {
@@ -159,6 +164,7 @@ public class Player {
 					return null;
 			}
 			city.getEconomicalBuildings().add((Farm) building);
+			city.getAllBuildings().add((Farm) building);
 		} else if (building instanceof Market) {
 			for (EconomicBuilding b : city.getEconomicalBuildings()) {
 				if (b instanceof Market)
@@ -166,6 +172,7 @@ public class Player {
 			}
 
 			city.getEconomicalBuildings().add((Market) building);
+			city.getAllBuildings().add((Market) building);
 		}
 		
 		this.setTreasury(this.getTreasury() - building.getCost());

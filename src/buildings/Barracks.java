@@ -8,7 +8,7 @@ import units.Unit;
 
 public class Barracks extends MilitaryBuilding{
 	public Barracks() {
-		super(2000, 1000, 500);
+		super(2000, 1000, 500, "Barracks");
 	}
 	
 	public void upgrade() throws BuildingInCoolDownException, MaxLevelException{
@@ -21,6 +21,7 @@ public class Barracks extends MilitaryBuilding{
 		}
 		if(level == 2) {
 			this.setRecruitmentCost(600);
+			this.setUpgradeCost(0);
 		}if(level ==3 ) {
 			throw new MaxLevelException("Maximum level possible");
 		}

@@ -55,7 +55,7 @@
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: cover;
 	-fx-background-position: center center;
-	-fx-font-family	: 'Enchanted Land';
+	/*-fx-font-family	: 'Enchanted Land';*/
 	
 }
 .label {
@@ -69,6 +69,23 @@
 	-fx-background-size: cover;
 	-fx-background-position: center center;
 }
+.message-pane{
+	-fx-background-color: #aeaeae;
+}
+.build-dropdown{
+	
+  -fx-background-color: black;
+  -fx-mark-color: orange; 
+}
+build-dropdown > .label { -fx-text-fill: white; }
+
+.alert {
+	-fx-background-color: white;
+	-fx-word-wrap: wrap;
+	
+}
+.alert > .label { -fx-text-fill: black; }
+
 .button {
-	-fx-font-size: 20px;
+	-fx-font-size: 20px ;
 }

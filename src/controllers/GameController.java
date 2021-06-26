@@ -12,6 +12,7 @@ public class GameController extends Application implements GameViewListener{
 	private GameView view;
 	private Game model;
 	
+	
 	private double height = 1080;
 	private double width = 1920;
 	@Override
@@ -34,11 +35,11 @@ public class GameController extends Application implements GameViewListener{
 			e.printStackTrace();
 		}
 
-		updateView();
+		initiateView();
 		
 	}
 
-	void updateView() {
+	public void initiateView() {
 		this.view.setFood(model.getPlayer().getFood());
 		this.view.setTreasury(model.getPlayer().getTreasury());
 		this.view.setTurnCount(model.getCurrentTurnCount());
@@ -53,8 +54,20 @@ public class GameController extends Application implements GameViewListener{
 			System.out.println("Game Over");
 		else {
 			this.model.endTurn();
-			updateView();
+			updateInfo();
+			
 		}
 	}
+
+	
+
+	@Override
+	public void updateInfo() {
+		this.view.setFood(model.getPlayer().getFood());
+		this.view.setTreasury(model.getPlayer().getTreasury());
+		this.view.setTurnCount(model.getCurrentTurnCount());
+		this.view.updateInfoBar();
+	}
+
 	
 }

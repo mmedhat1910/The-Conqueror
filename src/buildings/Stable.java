@@ -9,7 +9,7 @@ import units.Unit;
 
 public class Stable extends MilitaryBuilding{
 	public Stable() {
-		super(2500, 1500, 600);
+		super(2500, 1500, 600, "Stable");
 	}
 
 	public void upgrade() throws BuildingInCoolDownException, MaxLevelException{
@@ -23,12 +23,14 @@ public class Stable extends MilitaryBuilding{
 		}
 		if(level == 2) {
 			this.setRecruitmentCost(700);
+			this.setUpgradeCost(0);
 		}
 		if(level == 3) {
 			throw new MaxLevelException("Maximum upgrade level possible");
 		}
 		this.setLevel(level+1);
-		this.setCoolDown(true);		
+		this.setCoolDown(true);	
+		
 	}
 	
 	@Override

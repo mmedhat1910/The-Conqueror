@@ -10,6 +10,12 @@ import javafx.scene.layout.HBox;
 
 public class InfoBar extends BorderPane{
 	private GameView gameView;
+	private Label foodLabel;
+	
+
+	private Label goldLabel;
+	private Label turnLabel;
+	
 	
 	public InfoBar(GameView gameView) {
 		this.gameView = gameView;
@@ -17,6 +23,9 @@ public class InfoBar extends BorderPane{
 		this.setMaxHeight(50);
 		this.setPrefWidth(gameView.getWidth());
 		this.setPadding(new Insets(5, 10,5,10 ));
+		this.foodLabel = new Label(gameView.getFood()+"");
+		this.goldLabel = new Label(gameView.getTreasury()+"");
+		this.turnLabel = new Label("Turn: "+  gameView.getTurnCount());
 
 		HBox keepUpDataBox = new HBox();
 		
@@ -24,13 +33,13 @@ public class InfoBar extends BorderPane{
 		goldIcon.setFitHeight(50); goldIcon.setFitWidth(50);
 		keepUpDataBox.getChildren().add(goldIcon);
 		
-		keepUpDataBox.getChildren().add(new Label(gameView.getTreasury()+""));
+		keepUpDataBox.getChildren().add(goldLabel);
 		
 		ImageView foodIcon = new ImageView("file:resources/images/icons/apple.png");
 		foodIcon.setFitHeight(40); foodIcon.setFitWidth(40);
 		keepUpDataBox.getChildren().add(foodIcon);
 		
-		keepUpDataBox.getChildren().add(new Label(gameView.getFood()+""));
+		keepUpDataBox.getChildren().add(foodLabel);
 		keepUpDataBox.setAlignment(Pos.CENTER);
 		this.setLeft(keepUpDataBox);
 
@@ -42,7 +51,7 @@ public class InfoBar extends BorderPane{
 		this.setCenter(playerDataBox);
 		
 		HBox turnDataBox = new HBox();
-		turnDataBox.getChildren().add(new Label("Turn: "+  gameView.getTurnCount()));
+		turnDataBox.getChildren().add(turnLabel);
 		Button endTurnBtn = new Button("End Turn");
 		endTurnBtn.setOnAction(e->gameView.getListener().onEndTurn());
 		turnDataBox.getChildren().add(endTurnBtn);
@@ -54,5 +63,37 @@ public class InfoBar extends BorderPane{
 		turnDataBox.setAlignment(Pos.CENTER);
 		this.setRight(turnDataBox);
 	}
+
+	public void update() {
+		foodLabel.setText(this.gameView.getFood()+"");
+		goldLabel.setText(this.gameView.getTreasury()+"");
+		turnLabel.setText("Turn: " + this.gameView.getTurnCount());
+		
+	}
 	
+	
+	public Label getFoodLabel() {
+		return foodLabel;
+	}
+
+	
+	public void setFoodLabel(Label foodLabel) {
+		this.foodLabel = foodLabel;
+	}
+
+	public Label getGoldLabel() {
+		return goldLabel;
+	}
+
+	public void setGoldLabel(Label goldLabel) {
+		this.goldLabel = goldLabel;
+	}
+
+	public Label getTurnLabel() {
+		return turnLabel;
+	}
+
+	public void setTurnLabel(Label turnLabel) {
+		this.turnLabel = turnLabel;
+	}
 }

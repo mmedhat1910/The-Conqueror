@@ -7,12 +7,17 @@ abstract public class Building {
 	private int level;
 	private int upgradeCost;
 	private boolean coolDown;
+	private String type;
 	
-	public Building(int cost , int upgradeCost){
+	public Building(int cost , int upgradeCost, String type){
 		this.cost = cost;
 		this.level = 1;
 		this.upgradeCost = upgradeCost;
 		this.coolDown = true;
+		this.setType(type);
+	}
+	public String toString() {
+		return this.type +"\nLevel: "+this.level+"\nUpgrade Cost: "+this.upgradeCost+"\nBuilding in cooldown: "+this.coolDown;
 	}
 //	Getters
 	public int getCost() {return this.cost;}
@@ -31,12 +36,12 @@ abstract public class Building {
 		this.coolDown = coolDown;
 	}
 	
-	public void upgrade() throws BuildingInCoolDownException, MaxLevelException{
-		if(this.coolDown)
-			throw new BuildingInCoolDownException("Building is cooling down");
-		if(this.getLevel() == 3)
-			throw new MaxLevelException("Maximum level possible");
-		coolDown = true;
+	abstract public void upgrade() throws BuildingInCoolDownException, MaxLevelException;
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 }
 
