@@ -10,9 +10,13 @@ public class Army {
 	private int distancetoTarget; //Initially -1
 	private String target;
 	private String currentLocation;
-	private final int maxToHold = 10; //READ ONLY
+	private boolean targetReached = false;
+	
+	private String armyName;
+	private final int maxToHold = 12; //READ ONLY
 	
 	public Army(String currentLocation) {
+		
 		this.currentStatus = Status.IDLE;
 		this.units = new ArrayList<Unit>();
 		this.distancetoTarget = -1;
@@ -21,14 +25,20 @@ public class Army {
 		
 	}
 	public String toString() {
-		String s= "Army Location: "+ this.getCurrentLocation();
+		String s= "";
+		if(this.getArmyName()!=null)
+			s+=this.getArmyName() + "\n";
+		s+="Army Location: "+ this.getCurrentLocation();
 		s+= "\nStatus: "+this.getCurrentStatus().toString();
+		s+= "\nCurrent Units Count: "+this.getUnits().size();
 		if(!target.equals("")) {
 			s+= "\nTarget: "+this.getTarget();
 			s+= "\nTurns left to target: "+this.getDistancetoTarget();
+		}else {
+			s+= "\nTarget: N/A";
+			s+= "\nTurns left to target: N/A";
 		}
 		
-		s+= "\nCurrent Units Count: "+this.getUnits().size();
 		return s;
 	}
 //	Getter
@@ -74,6 +84,7 @@ public class Army {
 	public void relocateUnit(Unit unit) throws MaxCapacityException{
 		if(this.units.size() == this.maxToHold)
 			throw new MaxCapacityException("Cannot add more units to the army");
+		
 		unit.setParentArmy(this);
 		this.units.add(unit);
 		
@@ -98,6 +109,19 @@ public class Army {
 		}
 		return foodNeeded;
 	}
+	public String getArmyName() {
+		return armyName;
+	}
+	public void setArmyName(String armyName) {
+		this.armyName = armyName;
+	}
+	public boolean isTargetReached() {
+		return targetReached;
+	}
+	public void setTargetReached(boolean targetReached) {
+		this.targetReached = targetReached;
+	}
+
 	
 	
 	

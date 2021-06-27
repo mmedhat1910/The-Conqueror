@@ -9,6 +9,7 @@ import buildings.MilitaryBuilding;
 import exceptions.BuildingInCoolDownException;
 import exceptions.FriendlyFireException;
 import exceptions.MaxLevelException;
+import exceptions.MaxSeigingPeriod;
 import exceptions.NotEnoughGoldException;
 import units.*;
 
@@ -89,6 +90,7 @@ public class Game {
 		ArrayList<String> infantry_values = readCSV("units_values/infantry_values.csv");
 
 		Army city_army = new Army(cityName);
+		city_army.setArmyName(cityName+" defenders");
 		ArrayList<Unit> armyUnits = new ArrayList<Unit>();
 		for(int i=0;i<list.size();i++) {
 			String[] row = list.get(i).split(",");
@@ -130,6 +132,7 @@ public class Game {
 					
 			}
 			armyUnits.add(unit);
+		
 			unit.setParentArmy(city_army);
 		}
 		city_army.setUnits(armyUnits);
@@ -185,13 +188,14 @@ public class Game {
 			if (distance.getFrom().equals(army.getCurrentLocation()) && distance.getTo().equals(targetName) ||distance.getTo().equals(army.getCurrentLocation()) && distance.getFrom().equals(targetName) )
 				distanceToTarget = distance;
 		}
+		System.out.println(distanceToTarget.getDistance());
 		army.setDistancetoTarget(distanceToTarget.getDistance());
 		army.setCurrentStatus(Status.MARCHING);
 		army.setCurrentLocation("onRoad");
 		
 	}
 	
-	public void endTurn() {
+	public void endTurn() throws MaxSeigingPeriod {
 		this.currentTurnCount++; //increment current number of turns
 		//get initial values of gold and food at the beginning of the old turn
 		double totalUpkeep = 0;
@@ -215,22 +219,6 @@ public class Game {
 		player.setFood(food);
 		player.setTreasury(gold);
 		
-		for (Army a : player.getControlledArmies()) {
-			if (!a.getTarget() .equals("") && a.getCurrentStatus() == Status.IDLE) {
-				a.setCurrentStatus(Status.MARCHING);
-				a.setCurrentLocation("onRoad");
-			}
-			if(a.getDistancetoTarget()>0 &&!a.getTarget().equals(""))
-			a.setDistancetoTarget(a.getDistancetoTarget() - 1);
-			if (a.getDistancetoTarget() == 0) {
-				a.setCurrentLocation(a.getTarget());
-				a.setTarget("");
-				a.setDistancetoTarget(-1);
-				a.setCurrentStatus(Status.IDLE);
-			}
-			totalUpkeep +=  a.foodNeeded();
-
-		}
 		
 		
 		//updates player food after consuming food for all army
@@ -248,11 +236,30 @@ public class Game {
 			}
 		}
 		
+		for (Army a : player.getControlledArmies()) {
+			if (!a.getTarget().equals("") && a.getCurrentStatus() == Status.IDLE) {
+				a.setCurrentStatus(Status.MARCHING);
+				a.setCurrentLocation("onRoad");
+			}
+			if(a.getDistancetoTarget()>0 &&!a.getTarget().equals(""))
+			a.setDistancetoTarget(a.getDistancetoTarget() - 1);
+			if (a.getDistancetoTarget() == 0) {
+				a.setTargetReached(true);
+				a.setCurrentLocation(a.getTarget());
+				a.setTarget("");
+				a.setDistancetoTarget(-1);
+				a.setCurrentStatus(Status.IDLE);
+			}
+			totalUpkeep +=  a.foodNeeded();
+
+		}	
+		
 		for(City city: this.getAvailableCities()) {
 			if(city.isUnderSiege()) {
 				if(city.getTurnsUnderSiege() == 3) {
-					city.setTurnsUnderSiege(-1);
-					city.setUnderSiege(false);
+//					city.setTurnsUnderSiege(-1);
+//					city.setUnderSiege(false);
+					throw new MaxSeigingPeriod("You spent 3 turns laying seige on "+city.getName()+", please take action");
 				}else {
 					city.setTurnsUnderSiege(city.getTurnsUnderSiege()+1);
 					for(Unit unit : city.getDefendingArmy().getUnits()) {
@@ -271,13 +278,11 @@ public class Game {
 				city = c;
 		player.getControlledCities().add(city);
 		player.getControlledArmies().remove(a);
+		a.setArmyName(cityName+" defenders");
 		city.setDefendingArmy(a);
 		city.setUnderSiege(false);
 		city.setTurnsUnderSiege(-1);
 		a.setCurrentStatus(Status.IDLE);
-		
-		
-		
 	}
 	
 	
@@ -349,7 +354,6 @@ public class Game {
 			e.printStackTrace();
 		}
 		System.out.println(g.player.getControlledCities().get(0).getMilitaryBuildings().get(0).getLevel());
-		g.endTurn();
 		try {
 			g.player.getControlledCities().get(0).getMilitaryBuildings().get(0).upgrade();
 		} catch (BuildingInCoolDownException e) {

@@ -99,3 +99,11 @@ build-dropdown > .label { -fx-text-fill: white; }
 	-fx-font-size:15px;
 	-fx-text-fill:black;
 }
+
+.battle-view{
+	-fx-background-color:#cccccc;
+	-fx-text-fill:black;
+}
+.battle-view > .label{
+	-fx-text-fill:black;
+}

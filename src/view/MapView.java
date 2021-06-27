@@ -113,6 +113,13 @@ public class MapView extends Pane {
 		System.out.println();
 		unitsData.setText(data);	
 		unitsData.setMinHeight(500);
-		parent.getChildren().add(new MessagePane(parent, "Army Units", 700, 700, new Button(),unitsData ));
+		parent.getChildren().add(new MessagePane(parent, "Army Units", 700, 700, null,unitsData ));
+	}
+	public void onTargetBtnClicked(Army army) {
+		gameView.handleTargetClicked(army);
+	}
+	public void onVisitClicked(String cityName) {
+		gameView.visitCity(cityName);
+		
 	}
 }

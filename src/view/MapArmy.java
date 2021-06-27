@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import units.Army;
+import units.Status;
 
 public class MapArmy extends VBox{
 	private Army army;
@@ -28,10 +29,18 @@ public class MapArmy extends VBox{
 		if(title != null)
 			this.getChildren().add(label);
 		this.getChildren().add( imageContainer);
-		
+		Button targetBtn = new Button("Target");
 		Button unitsDetails = new Button("Check units info");
+		targetBtn.setOnAction(e-> parent.onTargetBtnClicked(army));
 		unitsDetails.setOnAction(e->parent.showUnitsInfo(army));
-		this.setOnMouseClicked(e-> parent.notifyListenersArmyClicked(army, unitsDetails));
+//		targetBtn
+		this.setOnMouseClicked(e-> parent.notifyListenersArmyClicked(army, unitsDetails,targetBtn));
+		String[] s = army.getArmyName().split(" ");
+		for(String str: s )
+			if(str.equals("defenders") || army.getCurrentStatus()!=Status.IDLE)				
+				this.setOnMouseClicked(e-> parent.notifyListenersArmyClicked(army, unitsDetails));
+		
+		
 	}
 
 	

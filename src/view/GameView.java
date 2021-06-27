@@ -1,13 +1,22 @@
 package view;
 
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 import controllers.ControlListener;
 import engine.City;
 import engine.Player;
+import exceptions.FriendlyCityException;
+import exceptions.FriendlyFireException;
+import exceptions.MaxCapacityException;
+import exceptions.TargetNotReachedException;
 import javafx.application.Application;
 import javafx.collections.MapChangeListener;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
@@ -26,6 +35,7 @@ public class GameView extends Stage implements ControlListener{
 	private PlayerNamePane playerNamePane;
 	private ChooseCityPane chooseCitypane;
 	private GamePane gamePane;
+	private BattlePane battlePane;
 	private ArrayList<City> availableCities; 
 	private double width;
 	private double height;
@@ -47,6 +57,7 @@ public class GameView extends Stage implements ControlListener{
 		this.playerNamePane = new PlayerNamePane(this);
 		this.chooseCitypane = new ChooseCityPane(this);
 		this.gameScene = new Scene(playerNamePane);
+		
 		this.logo = new Image("file:resources/images/logo/logo.png");
 		
 		
@@ -68,12 +79,112 @@ public class GameView extends Stage implements ControlListener{
 			gamePane.getMainPane().getChildren().add(new AlertPane(gamePane.getMainPane(), 500, 400, "Cannot Initiate more armies"));
 			return;
 		}
-		this.listener.onInitArmy(city, unit);
-		System.out.println("Initiated");
-		System.out.println(getPlayer().getControlledArmies().size());
+		Army createdArmy = this.listener.onInitArmy(city, unit);
+//		System.out.println("Initiated");
+//		System.out.println(getPlayer().getControlledArmies().size());
 		this.controlledArmies = getPlayer().getControlledArmies();
+		updateCityViewState(createdArmy.getArmyName() +" initiated");
+		
+	}
+	public void updateCityViewState(String status) {
 		gamePane.displayDefendingArmy();
+		gamePane.getActionBox().getActionButtons().getChildren().clear();
+		gamePane.getActionBox().getDetailsBox().clear();
+		gamePane.getActionBox().addStatus(status);
 		gamePane.getCityView().update();
+	}
+	public void handleRelocateUnit(Army army, Unit unit) throws MaxCapacityException  {
+			this.listener.onRelocateUnit(army,unit);
+			updateCityViewState(unit.getClass().getSimpleName()+"("+unit.getLevel()+") Relocated to "+army.getArmyName());
+	}
+	
+	public void handleTargetClicked(Army army) {
+		ChoiceBox<String> cityChoices = new ChoiceBox<>();
+		for(City c: availableCities)
+			if(!controlledCities.contains(c))
+				cityChoices.getItems().add(c.getName());
+		cityChoices.setValue(cityChoices.getItems().get(0));
+		Button targetFromMsg = new Button("Target");
+		MessagePane chooseTargetCity = new MessagePane(gamePane.getMainPane(), "Choose Target City", 500, 400,targetFromMsg , cityChoices);
+		gamePane.getMainPane().getChildren().add(chooseTargetCity);
+		targetFromMsg.setOnAction(e->{
+			String targetCity = cityChoices.getValue();
+			gamePane.getMainPane().getChildren().remove(chooseTargetCity);
+			gamePane.getActionBox().getDetailsBox().setArmy(army);
+			this.listener.onTargetSet(army,targetCity );
+			this.updateCityViewState(army.getArmyName()+" heading to "+targetCity);
+		});
+		
+	}
+	public City getCityByName(String name) {
+		for(City c: availableCities)
+			if(c.getName().equals(name))
+				return c;
+		return null;
+	}
+	
+	public void onReachingTarget(Army army) {
+		String status = army.getArmyName()+" reached "+army.getCurrentLocation();
+		Button laySeigeBtn = new Button("Lay Seige");
+		Button battleBtn = new Button("Start Battle");
+		gamePane.getActionBox().addStatus(status);
+		army.setTargetReached(false);
+		laySeigeBtn.setOnAction(e->System.out.println("Laysiege clicked"));
+		battleBtn.setOnAction(e->System.out.println("Enter Battle"));
+		City city = getCityByName(army.getCurrentLocation());
+		ActionAlert laySeigeMessage = new ActionAlert(gamePane.getMainPane(), "Action Needed", 600, 400, status, laySeigeBtn,battleBtn);
+		laySeigeBtn.setOnAction(e->{
+			try {
+				this.listener.handleLaySeige(army, city);
+				gamePane.getMainPane().getChildren().remove(laySeigeMessage);
+				updateCityViewState(city.getName() +" is underseige");
+			} catch (TargetNotReachedException | FriendlyCityException e1) {
+				gamePane.getMainPane().getChildren().add(new AlertPane(gamePane.getMainPane(), 500, 600, e1.getMessage()));
+			}finally {
+				gamePane.setMapView(gamePane.getMapView());
+			}
+		});
+		battleBtn.setOnAction(e->{
+			gamePane.getMainPane().getChildren().remove(laySeigeMessage);
+			this.enterBattle(army, city);
+		});
+		gamePane.getMainPane().getChildren().add(laySeigeMessage);
+		
+		
+		
+		
+	}
+	
+	public void enterBattle(Army a, City c) {
+		this.battlePane =new BattlePane(this, a, c.getDefendingArmy());
+		setPane(battlePane);
+	}
+
+	public void onAutoResolve(Army attackingArmy, Army defendingArmy) {
+		try {
+			this.listener.startResolve(attackingArmy, defendingArmy);
+			this.battlePane.update();
+		} catch (FriendlyFireException | IOException e) {
+			gamePane.getMainPane().getChildren().add(new AlertPane(battlePane.getMainPane(), 500, 600, e.getMessage()));
+		}
+		battlePane.update();
+		
+	}
+	
+	public void onAttack(Unit selectedUnit, Unit defendingUnit) {
+		try {
+			this.listener.startAttack(selectedUnit, defendingUnit);
+		} catch (FriendlyFireException | IOException e) {
+			gamePane.getMainPane().getChildren().add(new AlertPane(battlePane.getMainPane(), 500, 600, e.getMessage()));
+		}
+		battlePane.update();
+	}
+	
+	public void visitCity(String cityName) {
+		CityView view = gamePane.getCityViewByName(cityName);
+		gamePane.getMainPane().getChildren().remove(view);
+		gamePane.onExitMap();
+		gamePane.getMainPane().getChildren().add(view);
 	}
 	
 	@Override
@@ -245,6 +356,17 @@ public class GameView extends Stage implements ControlListener{
 	public void setPane(Pane pane) {
 		this.getScene().setRoot(pane);
 	}
+
+	
+
+	
+
+	
+
+	
+
+
+	
 	
 	
 	

@@ -86,13 +86,36 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 	
 	public void onArmyClicked(Army a, Button... buttons) {
 		this.detailsBox.setArmy(a);
-		if(a.getCurrentStatus()==Status.BESIEGING)
-			for(City c: gameView.getAvailableCities())
-				if(c.getName().toLowerCase().equals(a.getCurrentLocation().toLowerCase()))
-					detailsBox.addText("Turns Beseiging: "+c.getTurnsUnderSiege());
 		this.actionButtons.getChildren().clear();
+		Button battleBtn = new Button("Enter Battle");
+		if(a.getCurrentStatus()==Status.BESIEGING) {
+			for(City c: gameView.getAvailableCities())
+				if(c.getName().equals(a.getCurrentLocation())) {
+					detailsBox.addText("Turns Beseiging: "+c.getTurnsUnderSiege());
+					battleBtn.setOnAction(e-> gameView.enterBattle(a, c));
+			}
+			this.actionButtons.getChildren().add(battleBtn);
+
+		} 
 		if(buttons.length!=0)
 		this.actionButtons.getChildren().addAll(buttons);
+	}
+	
+	@Override
+	public void onCityClicked(String cityName, Button...buttons) {
+		this.actionButtons.getChildren().clear();
+		for(City c: gameView.getControlledCities()) {
+			if(c.getName().equals(cityName)) {
+				this.detailsBox.setText(cityName+" is Controlled");
+				this.actionButtons.getChildren().add(buttons[0]);
+			}else {
+				this.detailsBox.setText(cityName+" is Enemy");
+				if(c.isUnderSiege())
+					this.actionButtons.getChildren().add(buttons[1]);
+			}
+			
+		}
+		
 	}
 	
 	public void addStatus(String s) {
@@ -119,44 +142,7 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 		
 	}
 	
-	public DetailsBox getDetailsBox() {
-		return detailsBox;
-	}
-
-
-
-	public void setDetailsBox(DetailsBox detailsBox) {
-		this.detailsBox = detailsBox;
-	}
 	
-	public VBox getActionButtons() {
-		return actionButtons;
-	}
-
-	public void setActionButtons(VBox actionButtons) {
-		this.actionButtons = actionButtons;
-	}
-
-	public TextArea getStatusBox() {
-		return statusBox;
-	}
-
-	public void setStatusBox(TextArea statusBox) {
-		this.statusBox = statusBox;
-	}
-
-
-
-
-
-
-
-	
-
-
-
-
-
 
 	@Override
 	public void onMapViewOpen() {
@@ -164,21 +150,7 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 		
 	}
 
-
-	@Override
-	public void onCityClicked(String cityName, Button...buttons) {
-		for(City c: gameView.getControlledCities())
-			if(c.getName().equals(cityName)) {
-				this.detailsBox.setText(cityName+" is Controlled");
-				this.actionButtons.getChildren().clear();
-				this.actionButtons.getChildren().add(buttons[0]);
-			}else {
-				this.detailsBox.setText(cityName+" is Enemy");
-				this.actionButtons.getChildren().clear();
-				this.actionButtons.getChildren().add(buttons[1]);
-			}
-		
-	}
+	
 
 
 
@@ -225,7 +197,31 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 	}
 
 
+	public DetailsBox getDetailsBox() {
+		return detailsBox;
+	}
 
+
+
+	public void setDetailsBox(DetailsBox detailsBox) {
+		this.detailsBox = detailsBox;
+	}
+	
+	public VBox getActionButtons() {
+		return actionButtons;
+	}
+
+	public void setActionButtons(VBox actionButtons) {
+		this.actionButtons = actionButtons;
+	}
+
+	public TextArea getStatusBox() {
+		return statusBox;
+	}
+
+	public void setStatusBox(TextArea statusBox) {
+		this.statusBox = statusBox;
+	}
 
 
 

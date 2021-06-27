@@ -6,6 +6,7 @@ import buildings.Building;
 import buildings.MilitaryBuilding;
 import engine.City;
 import exceptions.BuildingInCoolDownException;
+import exceptions.MaxCapacityException;
 import exceptions.MaxLevelException;
 import exceptions.MaxRecruitedException;
 import exceptions.NotEnoughGoldException;
@@ -14,6 +15,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -41,20 +43,27 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	private ArrayList<String> buildingsToBuild;
 	private Button mapBtn;
 	private MapView mapView;
+	
 	private VBox stickyButtons;
 	private Button initArmyBtn;
 	private Button relocateBtn;
 	private FlowPane defendingArmyBox;
+	private ArrayList<CityView> cities;
 	
 	public GamePane(GameView gameView, City currentCity) {
 		this.gameView = gameView;
 		this.currentCity = currentCity;
+		this.cities = new ArrayList<>();
+		for(City c: gameView.getAvailableCities())
+			this.cities.add(new CityView(gameView, c));
+		
 		this.initArmyBtn = new Button("Initiate Army");
 		this.setRelocateBtn(new Button("Relocate Unit"));
 		this.stickyButtons = new VBox();
 		this.actionBox = new ActionBox(gameView, this.stickyButtons);
 		this.mainPane = new StackPane();
-		this.cityView = new CityView(gameView, currentCity);
+		this.cityView = this.getCityViewByName(currentCity.getName());
+		
 		this.mapView = new MapView(gameView, mainPane);
 		this.defendingArmyBox = new FlowPane();
 		this.cityView.add(defendingArmyBox,0,1,4,1);
@@ -72,6 +81,8 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		buildingsToBuild.add("Barracks");
 		buildingsToBuild.add("Stable");
 		mapBtn.setOnAction(e->{
+			if(this.mainPane.getChildren().contains(mapView))
+				this.mainPane.getChildren().remove(mapView);
 			this.mainPane.getChildren().add(mapView);
 			this.mapView.notifyListenersMapOpened();
 			this.onMapViewOpen();
@@ -79,6 +90,8 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		});
 		initArmyBtn.setOnAction(e-> System.out.println("Initiate Army clicked"));
 //		this.actionBox.getActionButtons().getChildren().add(initArmyBtn);
+		
+		
 		
 		stickyButtons.getChildren().addAll(mapBtn);
 		this.mapView.setListener(actionBox);
@@ -90,6 +103,19 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		
 	}
 
+	public Army getArmyByName(String name) {
+		for (Army a : gameView.getControlledArmies())
+			if(a.getArmyName().equals(name))
+				return a;
+		return null;
+	}
+	
+	public CityView getCityViewByName(String name) {
+		for(CityView view : this.cities)
+			if(view.getCity().getName().equals(name))
+				return view;
+		return null;
+	}
 	
 	public void onExitMap() {
 		this.mapBtn.setDisable(false);
@@ -216,12 +242,41 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 				img.setImage(new Image("file:resources/images/army/cavalry"+u.getLevel()+".png"));
 			img.setFitWidth(100);
 			img.setPreserveRatio(true);
+			relocateBtn.setOnAction(e->onRelocateBtnClicked(u));
 			img.setOnMouseClicked(e->actionBox.onUnitClicked(u, relocateBtn, initArmyBtn));
-			
+			//TODO units are added here
 			defendingArmyBox.getChildren().add(img);
 			
 		}
 		
+	}
+	public void onRelocateBtnClicked(Unit unit) {
+		ChoiceBox<String> armyNames = new ChoiceBox<>();
+		for(Army a: this.gameView.getControlledArmies()) {
+			armyNames.getItems().add(a.getArmyName());
+		}
+		Button relocateFromMessage = new Button("Relocate");
+		armyNames.setOnAction(e-> relocateFromMessage.setDisable(false));
+		Node messageContent = armyNames ;
+		if(armyNames.getItems().size() == 0) {
+			messageContent =  new Label("No army available");
+			relocateFromMessage.setDisable(true);
+		}else {			
+			armyNames.setValue(armyNames.getItems().get(0));
+			relocateFromMessage.setDisable(false);
+		}
+		MessagePane messagePane = new MessagePane(mainPane, "Choose Army", 600, 500, relocateFromMessage, messageContent);
+		relocateFromMessage.setOnAction(e1-> {
+			try {
+				gameView.handleRelocateUnit(getArmyByName(armyNames.getValue()), unit);
+				mainPane.getChildren().remove(messagePane);
+			} catch (MaxCapacityException e) {
+				messagePane.getContent().getChildren().add(new Label(e.getMessage()));
+				relocateFromMessage.setDisable(true);
+			}
+			
+		});
+		mainPane.getChildren().add(messagePane);
 	}
 	
 	@Override
@@ -368,6 +423,16 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 
 	public void setRelocateBtn(Button relocateBtn) {
 		this.relocateBtn = relocateBtn;
+	}
+
+
+	public ArrayList<CityView> getCities() {
+		return cities;
+	}
+
+
+	public void setCities(ArrayList<CityView> cities) {
+		this.cities = cities;
 	}
 
 	

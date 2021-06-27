@@ -23,16 +23,13 @@ public class MapCity extends ImageView{
 		this.relocate(xCoordinate, yCoordinate);
 		
 		Button visitBtn =  new Button("Visit City");
-		Button targetBtn = new Button("Target");
 		visitBtn.setOnAction(e->{
-			System.out.println("Visit" + cityName);
-		});
-		targetBtn.setOnAction(e->{
-			System.out.println("Target" + cityName);
+			parent.onVisitClicked(cityName);
 		});
 		
+		Button attackBtn = new Button("Attack "+cityName);
 		this.setOnMouseClicked(e->{
-			parent.notifyListenersCityClicked(cityName, visitBtn, targetBtn);
+			parent.notifyListenersCityClicked(cityName, visitBtn,attackBtn);
 		});
 	}
 	
