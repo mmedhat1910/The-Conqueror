@@ -13,7 +13,7 @@ public class Army {
 	private boolean targetReached = false;
 	
 	private String armyName;
-	private final int maxToHold = 12; //READ ONLY
+	private final int maxToHold = 15; //READ ONLY
 	
 	public Army(String currentLocation) {
 		
@@ -85,15 +85,18 @@ public class Army {
 		if(this.units.size() == this.maxToHold)
 			throw new MaxCapacityException("Cannot add more units to the army");
 		
+		units.add(unit);
+		unit.getParentArmy().units.remove(unit);
 		unit.setParentArmy(this);
-		this.units.add(unit);
 		
 	}
 	
 	public void handleAttackedUnit(Unit u) {
-		if(u.getCurrentSoldierCount() == 0)
-			this.getUnits().remove(u);
+		if(u.getCurrentSoldierCount()<=0){
+			u.setCurrentSoldierCount(0);
+			units.remove(u);
 		}
+	}
 	
 	public double foodNeeded() {
 		double foodNeeded = 0;

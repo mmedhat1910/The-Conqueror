@@ -4,8 +4,11 @@ import buildings.Building;
 import buildings.EconomicBuilding;
 import buildings.MilitaryBuilding;
 import engine.City;
+import exceptions.MaxCapacityException;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.FlowPane;
@@ -77,12 +80,49 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 		this.detailsBox.setUnit(u);
 		this.actionButtons.getChildren().clear();
 		gameView.getGamePane().getInitArmyBtn().setOnAction(e->gameView.handleInitArmy(gameView.getGamePane().getCurrentCity(), u));
+		gameView.getGamePane().getRelocateBtn().setOnAction(e-> onRelocateBtnClicked(u));
 		if(gameView.getGamePane().getCurrentCity().getDefendingArmy().getUnits().contains(u))
 			this.actionButtons.getChildren().add(buttons[1]);
 		this.actionButtons.getChildren().addAll(buttons[0]);
 	}
 	
+	public void onRelocateBtnClicked(Unit unit) {
+		ChoiceBox<String> armyNames = new ChoiceBox<>();
+		for(Army a: this.gameView.getControlledArmies()) {
+			armyNames.getItems().add(a.getArmyName());
+		}
+		Button relocateFromMessage = new Button("Relocate");
+		armyNames.setOnAction(e-> relocateFromMessage.setDisable(false));
+		Node messageContent = armyNames ;
+		if(armyNames.getItems().size() == 0) {
+			messageContent =  new Label("No army available");
+			relocateFromMessage.setDisable(true);
+		}else {			
+			armyNames.setValue(armyNames.getItems().get(0));
+			relocateFromMessage.setDisable(false);
+		}
+		System.out.println("Out of action: "+unit.getClass());
+		MessagePane messagePane = new MessagePane(gameView.getGamePane().getMainPane(), "Choose Army", 600, 500, relocateFromMessage, messageContent);
+		relocateFromMessage.setOnAction(e1-> {
+			try {
+				gameView.handleRelocateUnit(getArmyByName(armyNames.getValue().toString()), unit);
+				System.out.println("GamePane: "+unit.getClass());
+				gameView.getGamePane().getMainPane().getChildren().remove(messagePane);
+			} catch (MaxCapacityException e) {
+				messagePane.getContent().getChildren().add(new Label(e.getMessage()));
+				relocateFromMessage.setDisable(true);
+			}
+			
+		});
+		gameView.getGamePane().getMainPane().getChildren().add(messagePane);
+	}
 	
+	public Army getArmyByName(String name) {
+		for (Army a : gameView.getControlledArmies())
+			if(a.getArmyName().equals(name))
+				return a;
+		return null;
+	}
 	
 	public void onArmyClicked(Army a, Button... buttons) {
 		this.detailsBox.setArmy(a);

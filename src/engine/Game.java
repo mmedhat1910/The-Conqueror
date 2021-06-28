@@ -9,7 +9,7 @@ import buildings.MilitaryBuilding;
 import exceptions.BuildingInCoolDownException;
 import exceptions.FriendlyFireException;
 import exceptions.MaxLevelException;
-import exceptions.MaxSeigingPeriod;
+import exceptions.MaxSeigingPeriodException;
 import exceptions.NotEnoughGoldException;
 import units.*;
 
@@ -195,7 +195,7 @@ public class Game {
 		
 	}
 	
-	public void endTurn() throws MaxSeigingPeriod {
+	public void endTurn() throws MaxSeigingPeriodException {
 		this.currentTurnCount++; //increment current number of turns
 		//get initial values of gold and food at the beginning of the old turn
 		double totalUpkeep = 0;
@@ -259,7 +259,7 @@ public class Game {
 				if(city.getTurnsUnderSiege() == 3) {
 //					city.setTurnsUnderSiege(-1);
 //					city.setUnderSiege(false);
-					throw new MaxSeigingPeriod("You spent 3 turns laying seige on "+city.getName()+", please take action");
+					throw new MaxSeigingPeriodException("You spent 3 turns laying seige on "+city.getName()+", please take action");
 				}else {
 					city.setTurnsUnderSiege(city.getTurnsUnderSiege()+1);
 					for(Unit unit : city.getDefendingArmy().getUnits()) {
@@ -292,7 +292,7 @@ public class Game {
 			throw new FriendlyFireException("Friendly fire");
 		
 		boolean attackerTurn = true; //flag to keep player turn 
-		while(attacker.getUnits().size() > 0 && attacker.getUnits().size() > 0) {
+		while(attacker.getUnits().size() > 0 && defender.getUnits().size() > 0) {
 			// random index to choose random units
 			int index1 = (int) (Math.random() * attacker.getUnits().size());
 			int index2 = (int) (Math.random() * defender.getUnits().size());
@@ -320,6 +320,7 @@ public class Game {
 					c.setTurnsUnderSiege(-1);
 					c.setUnderSiege(false);
 			}
+			player.getControlledArmies().remove(attacker);
 		}
 		
 		

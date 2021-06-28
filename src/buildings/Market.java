@@ -7,17 +7,17 @@ public class Market extends EconomicBuilding {
 	public Market() {
 		super(1500,700, "Market");
 	}
-	public void upgrade() throws BuildingInCoolDownException, MaxLevelException{
-		if(this.isCoolDown())
-			throw new BuildingInCoolDownException("Building is cooling down");
-		int level = this.getLevel();
-		if(level == 1)
-			this.setUpgradeCost(1000);
-		if(level == 2)
-			throw new MaxLevelException("Maximum level possible");
+	@Override
+	public void upgrade() throws BuildingInCoolDownException, MaxLevelException {
+		super.upgrade();
+		if(getLevel()==1)
+		{
+			setLevel(2);
+			setUpgradeCost(1000);
+		}
+		else if(getLevel()==2)
+		setLevel(3);
 		
-		this.setLevel(level+1);
-		this.setCoolDown(true);
 	}
 	@Override
 	public int harvest() {

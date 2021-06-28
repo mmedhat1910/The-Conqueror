@@ -1,6 +1,7 @@
 package view;
 
 import controllers.GameController;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -8,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import units.Army;
 import units.Unit;
 
@@ -22,7 +24,8 @@ public class BattlePane extends BorderPane{
 	private StackPane mainPane;
 	private Button autoResolve;
 	private Button surrender;
-	private Unit selectedUnit;
+	private Unit attackingUnit;
+	private Unit defendingUnit;
 	public BattlePane(GameView gameView, Army attacking, Army defending) {
 		this.attackingArmy =  attacking;
 		this.defendingArmy =defending;
@@ -59,16 +62,20 @@ public class BattlePane extends BorderPane{
 	}
 
 	private void handleAttack() {
-		int randomIndex = (int) (Math.random()*defendingArmy.getUnits().size());
-		Unit defendingUnit = defendingArmy.getUnits().get(randomIndex);
-		if(this.selectedUnit != null) {
-			gameView.onAttack(selectedUnit, defendingUnit);
-			randomIndex = (int) (Math.random()*defendingArmy.getUnits().size());
-			defendingUnit = defendingArmy.getUnits().get(randomIndex);
-			randomIndex =  (int) (Math.random()*attackingArmy.getUnits().size());
-			Unit randomAttacker = attackingArmy.getUnits().get(randomIndex);
-			gameView.onAttack(defendingUnit, randomAttacker);
-			selectedUnit = null;
+		PauseTransition pause = new PauseTransition(Duration.seconds(1));
+		if(this.attackingUnit != null && this.defendingUnit != null) {
+			gameView.onAttack(attackingUnit, defendingUnit);
+			pause.setOnFinished(e-> {
+				int randomIndex;
+				randomIndex = (int) (Math.random()*defendingArmy.getUnits().size());
+				defendingUnit = defendingArmy.getUnits().get(randomIndex);
+				randomIndex =  (int) (Math.random()*attackingArmy.getUnits().size());
+				attackingUnit = attackingArmy.getUnits().get(randomIndex);
+				gameView.onAttack(defendingUnit, attackingUnit);
+				attackingUnit = null; defendingUnit =null;
+			});
+			pause.playFromStart();
+			
 		}else {
 			System.out.println("Select a unit");
 		}
@@ -86,8 +93,8 @@ public class BattlePane extends BorderPane{
 			attackingSide.getChildren().add(unitBtn);
 			
 			unitBtn.setOnAction(e->{	
-				this.selectedUnit=unit;
-				System.out.println(selectedUnit.getClass().getSimpleName());
+				this.attackingUnit=unit;
+				System.out.println(attackingUnit.getClass().getSimpleName());
 			});
 		}
 			
@@ -95,6 +102,11 @@ public class BattlePane extends BorderPane{
 		for(Unit unit: defendingArmy.getUnits()) {
 			Button unitBtn = new Button(unit.getClass().getSimpleName()+" "+unit.getLevel() +" "+unit.getCurrentSoldierCount());
 			defendingSide.getChildren().add(unitBtn);
+			
+			unitBtn.setOnAction(e->{	
+				this.defendingUnit=unit;
+				System.out.println(defendingUnit.getClass().getSimpleName());
+			});
 		}
 
 		this.setRight(defendingSide);

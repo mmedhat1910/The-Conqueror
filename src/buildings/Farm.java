@@ -8,18 +8,20 @@ public class Farm extends EconomicBuilding {
 		super(1000, 500, "Farm");
 	}
 	
-	public void upgrade() throws BuildingInCoolDownException, MaxLevelException{
-		if(this.isCoolDown())
-			throw new BuildingInCoolDownException("Building is cooling down");
-		int level = this.getLevel();
-		if(level == 1) {
-			this.setUpgradeCost(700);
+	@Override
+	public void upgrade() throws BuildingInCoolDownException, MaxLevelException {
+		super.upgrade();
+		if(getLevel()==1)
+		{
+			setLevel(2);
+			setUpgradeCost(700);
 		}
-		else if(level == 2)
-			throw new MaxLevelException("Maximum level possible");
+		else if(getLevel()==2)
+		{
+			setLevel(3);
+			
+		}
 		
-		this.setLevel(level+1);
-		this.setCoolDown(true);
 	}
 
 	@Override

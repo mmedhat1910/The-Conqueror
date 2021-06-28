@@ -94,6 +94,7 @@ public class GameView extends Stage implements ControlListener{
 		gamePane.getCityView().update();
 	}
 	public void handleRelocateUnit(Army army, Unit unit) throws MaxCapacityException  {
+		System.out.println("Gameview: "+unit.getClass());
 			this.listener.onRelocateUnit(army,unit);
 			updateCityViewState(unit.getClass().getSimpleName()+"("+unit.getLevel()+") Relocated to "+army.getArmyName());
 	}

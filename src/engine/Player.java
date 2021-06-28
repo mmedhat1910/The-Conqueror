@@ -12,7 +12,7 @@ public class Player {
 	private String name; // READ ONLY
 	private ArrayList<City> controlledCities; // READ ONLY
 	private ArrayList<Army> controlledArmies; // READ ONLY
-	
+
 	private double treasury;
 	private double food;
 
@@ -56,18 +56,18 @@ public class Player {
 	public void recruitUnit(String type, String cityName)
 			throws BuildingInCoolDownException, MaxRecruitedException, NotEnoughGoldException {
 		City city = null;
-		
+
 		for (City c : this.getControlledCities()) {
-			
+
 			if (c.getName().equals(cityName)) {
 				city = c;
 				break;
 			}
 		}
-		if(city==null)
+		if (city == null)
 			return;
 		MilitaryBuilding building = new ArcheryRange();
-		
+
 		if (type.equals("Archer")) {
 			for (MilitaryBuilding b : city.getMilitaryBuildings()) {
 				if (b instanceof ArcheryRange) {
@@ -90,10 +90,7 @@ public class Player {
 				}
 			}
 		}
-		
-		
-		
-		
+
 		Unit recruitedUnit = building.recruit();
 		if (this.getTreasury() < building.getRecruitmentCost())
 			throw new NotEnoughGoldException("No Enough gold to recruit " + type);
@@ -110,7 +107,6 @@ public class Player {
 				break;
 			}
 		}
-		
 
 		Building building = null;
 		switch (type.toLowerCase()) {
@@ -129,11 +125,10 @@ public class Player {
 		case "market":
 			building = new Market();
 		}
-		
+
 		if (this.getTreasury() < building.getCost())
 			throw new NotEnoughGoldException("No enough gold to build " + type);
 
-		
 		if (building instanceof ArcheryRange) {
 			for (MilitaryBuilding b : city.getMilitaryBuildings()) {
 				if (b instanceof ArcheryRange)
@@ -149,7 +144,7 @@ public class Player {
 			}
 			city.getMilitaryBuildings().add((Stable) building);
 			city.getAllBuildings().add((Stable) building);
-			
+
 		} else if (building instanceof Barracks) {
 			for (MilitaryBuilding b : city.getMilitaryBuildings()) {
 				if (b instanceof Barracks)
@@ -157,7 +152,7 @@ public class Player {
 			}
 			city.getMilitaryBuildings().add((Barracks) building);
 			city.getAllBuildings().add((Barracks) building);
-			
+
 		} else if (building instanceof Farm) {
 			for (EconomicBuilding b : city.getEconomicalBuildings()) {
 				if (b instanceof Farm)
@@ -174,7 +169,7 @@ public class Player {
 			city.getEconomicalBuildings().add((Market) building);
 			city.getAllBuildings().add((Market) building);
 		}
-		
+
 		this.setTreasury(this.getTreasury() - building.getCost());
 		building.setCoolDown(true);
 		return building;
@@ -203,7 +198,7 @@ public class Player {
 		if (this.controlledCities.contains(city))
 			throw new FriendlyCityException("Laying seige on friendly city");
 		if (!army.getCurrentLocation().equals(city.getName()))
-			throw new TargetNotReachedException("Target: (" +city.getName() + ") not reached yet");
+			throw new TargetNotReachedException("Target: (" + city.getName() + ") not reached yet");
 		army.setCurrentStatus(Status.BESIEGING);
 		city.setUnderSiege(true);
 		city.setTurnsUnderSiege(0);

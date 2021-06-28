@@ -8,7 +8,7 @@ import engine.Game;
 import exceptions.FriendlyCityException;
 import exceptions.FriendlyFireException;
 import exceptions.MaxCapacityException;
-import exceptions.MaxSeigingPeriod;
+import exceptions.MaxSeigingPeriodException;
 import exceptions.TargetNotReachedException;
 import javafx.application.Application;
 import javafx.scene.control.Button;
@@ -103,7 +103,7 @@ public class GameController extends Application implements GameViewListener{
 				view.getGamePane().setMapView(view.getGamePane().getMapView());
 				checkForBattleAction();
 				
-			} catch (MaxSeigingPeriod e) {
+			} catch (MaxSeigingPeriodException e) {
 				Button okBtn = new Button("Ok");
 				
 				view.getGamePane().getMainPane().getChildren().add(new ActionAlert(view.getGamePane().getMainPane(), "Battle Action", 600,400,"You are going to be prompt to the battle view to finalize the active seiging",okBtn));

@@ -19,6 +19,15 @@ abstract public class Building {
 	public String toString() {
 		return this.type +"\nLevel: "+this.level+"\nUpgrade Cost: "+this.upgradeCost ;//+"\nBuilding in cooldown: "+this.coolDown;
 	}
+	
+	public  void upgrade() throws BuildingInCoolDownException, MaxLevelException
+	{
+		if(coolDown)
+			throw new BuildingInCoolDownException("Building is in cool down. Wait for the next turn ");
+		if(level==3)
+			throw new MaxLevelException("Maximum level reached!!");
+		coolDown=true;
+	}
 //	Getters
 	public int getCost() {return this.cost;}
 	public int getLevel() {return this.level;}
@@ -36,7 +45,6 @@ abstract public class Building {
 		this.coolDown = coolDown;
 	}
 	
-	abstract public void upgrade() throws BuildingInCoolDownException, MaxLevelException;
 	public String getType() {
 		return type;
 	}

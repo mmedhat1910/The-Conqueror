@@ -1,27 +1,27 @@
 package exceptions;
 
-public class TargetReached extends Exception {
+public class TargetReachedException extends Exception {
 
-	public TargetReached() {
+	public TargetReachedException() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public TargetReached(String message) {
+	public TargetReachedException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public TargetReached(Throwable cause) {
+	public TargetReachedException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public TargetReached(String message, Throwable cause) {
+	public TargetReachedException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public TargetReached(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+	public TargetReachedException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub
 	}
