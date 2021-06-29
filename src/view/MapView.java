@@ -20,6 +20,8 @@ public class MapView extends Pane {
 	private MapCity sparta;
 	private MapCity cairo;
 	private Pane parent;
+//	private MapArmy mapArmy;
+	private ArrayList<MapArmy> mapArmies; 
 	public MapView(GameView gameView, Pane parent) {
 		this.gameView = gameView;
 		this.parent = parent;
@@ -31,7 +33,8 @@ public class MapView extends Pane {
 		this.minHeight(height);
 		this.setMaxWidth(width);
 		this.setMaxHeight(height);
-		
+		this.mapArmies = new ArrayList<>();
+//		this.mapArmy= new MapArmy(this, new Army("", "123"), null, 50);
 		Button closeMap = new Button("Close");
 		closeMap.setOnAction(e->{
 			parent.getChildren().remove(this);
@@ -51,6 +54,10 @@ public class MapView extends Pane {
 		
 		
 	}
+	public void updateMap() {
+//		gameView.getGamePane().onExitMap();
+		gameView.getGamePane().onMapViewOpen();
+	}
 	public void locateDefendingArmy(String cityName, Army defendingArmy) {
 		MapArmy army = new MapArmy(this,defendingArmy, cityName+" Defenders", 100);
 		this.getChildren().add(army);
@@ -63,23 +70,45 @@ public class MapView extends Pane {
 			
 	}
 	public void locateArmies(Army army, int idx) {
-		MapArmy a = new MapArmy(this, army, null, 50);
-		this.getChildren().add(a);
+		String[] str = army.getArmyName().split(" ");
+		MapArmy mapArmy = mapArmies.get(idx);
+		mapArmy.setArmy(army);
+//		marchingArmy.setC
+		if(this.getChildren().contains(mapArmy))
+			this.getChildren().remove(mapArmy);
+
+		for(String s: str)
+			if(s.equals("defenders")) {
+				this.getChildren().remove(mapArmy);
+				return;
+				
+			}
+		if(army.getUnits().size()==0) {
+			this.getChildren().remove(mapArmy);
+			return;
+		}
+			
+		
+		this.getChildren().add(mapArmy);
 		if(army.getCurrentStatus() != Status.MARCHING) {
 			if(army.getCurrentLocation().toLowerCase().equals("rome"))
-				a.relocate(rome.getxCoordinate()+(50*(idx%5)), rome.getyCoordinate()+70);
+				mapArmy.relocate(rome.getxCoordinate()+(50*(idx%5)), rome.getyCoordinate()+70);
 			else if(army.getCurrentLocation().toLowerCase().equals("sparta"))
-				a.relocate(sparta.getxCoordinate()+(50*(idx%5)), sparta.getyCoordinate()+70);
+				mapArmy.relocate(sparta.getxCoordinate()+(50*(idx%5)), sparta.getyCoordinate()+70);
 			else if(army.getCurrentLocation().toLowerCase().equals("cairo"))
-				a.relocate(cairo.getxCoordinate()+(50*(idx%5)+20), cairo.getyCoordinate()+50);
+				mapArmy.relocate(cairo.getxCoordinate()+(50*(idx%5)+20), cairo.getyCoordinate()+50);
 //				a.relocate(rome.getxCoordinate()+(50*(idx%5)), rome.getxCoordinate()+70*(idx/5));
 		}else {
 			double x = Math.random()*100 + this.width*0.5;
 			double y = Math.random()*100 + this.height*0.3;
-			a.relocate(x, y);
+			mapArmy.relocate(x, y);
+			System.out.println(mapArmy);
+//			System.out.println("locate armies");
 			//TODO: do the math
 		}
 	}
+	
+	
 	public void setListener(MapViewListener... listeners) {
 		for(MapViewListener l : listeners)
 			this.listeners.add(l);
@@ -103,6 +132,7 @@ public class MapView extends Pane {
 		TextArea unitsData = new TextArea();
 		unitsData.setEditable(false);
 		String data="";
+//		TODO
 		for(Unit u: army.getUnits()) {
 			data+=u.getClass().getSimpleName();
 			data+="\nLevel: "+u.getLevel();
@@ -121,5 +151,11 @@ public class MapView extends Pane {
 	public void onVisitClicked(String cityName) {
 		gameView.visitCity(cityName);
 		
+	}
+	public ArrayList<MapArmy> getMapArmies() {
+		return mapArmies;
+	}
+	public void setMapArmies(ArrayList<MapArmy> mapArmies) {
+		this.mapArmies = mapArmies;
 	}
 }

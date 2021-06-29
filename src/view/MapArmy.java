@@ -13,13 +13,13 @@ public class MapArmy extends VBox{
 	private Army army;
 	private String title;
 	private ImageView imageContainer;
-	private MapView parent;
+	private MapView parentView;
 	
-	public MapArmy(MapView parent,Army army, String title,double size) {
-		this.parent = parent;
+	public MapArmy(MapView parent,Army a, String title,double size) {
+		this.parentView = parent;
 		this.title = title;
 		this.imageContainer = new ImageView("file:resources/images/army/army-icon.png");
-		this.army = army;
+		this.army = a;
 //		imageContainer.setImage(new Image("file:resources/images/army/army-icon.png"));
 		imageContainer.setFitWidth(size);
 		imageContainer.setPreserveRatio(true);
@@ -41,6 +41,30 @@ public class MapArmy extends VBox{
 				this.setOnMouseClicked(e-> parent.notifyListenersArmyClicked(army, unitsDetails));
 		
 		
+	}
+
+	public Army getArmy() {
+		return army;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public MapView getParentView() {
+		return parentView;
+	}
+
+	public void setArmy(Army army) {
+		this.army = army;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setParentView(MapView parentView) {
+		this.parentView = parentView;
 	}
 
 	

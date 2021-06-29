@@ -1,6 +1,6 @@
 package controllers;
 
-public interface ControlListener {
+public interface ControllerListener {
 
 	void startGame();
 	

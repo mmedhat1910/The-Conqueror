@@ -19,7 +19,7 @@ public class Farm extends EconomicBuilding {
 		else if(getLevel()==2)
 		{
 			setLevel(3);
-			
+			setUpgradeCost(-1);
 		}
 		
 	}

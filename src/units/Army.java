@@ -15,14 +15,14 @@ public class Army {
 	private String armyName;
 	private final int maxToHold = 15; //READ ONLY
 	
-	public Army(String currentLocation) {
-		
+	public Army(String... args) {
+		this.currentLocation= args[0]; 
 		this.currentStatus = Status.IDLE;
 		this.units = new ArrayList<Unit>();
 		this.distancetoTarget = -1;
 		this.target = "";
-		this.currentLocation = currentLocation;
-		
+		if(args.length>1)
+			this.armyName = args[1];
 	}
 	public String toString() {
 		String s= "";

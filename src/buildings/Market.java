@@ -15,8 +15,10 @@ public class Market extends EconomicBuilding {
 			setLevel(2);
 			setUpgradeCost(1000);
 		}
-		else if(getLevel()==2)
+		else if(getLevel()==2) {
 		setLevel(3);
+		setUpgradeCost(-1);
+		}
 		
 	}
 	@Override

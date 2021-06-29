@@ -101,7 +101,10 @@ build-dropdown > .label { -fx-text-fill: white; }
 }
 
 .battle-view{
-	-fx-background-color:#cccccc;
+	-fx-background-image: url('file:resources/images/backgrounds/battle_lowAlpha.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+	-fx-background-position: center center;
 	-fx-text-fill:black;
 }
 .battle-view > .label{

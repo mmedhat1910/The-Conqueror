@@ -21,4 +21,5 @@ public interface GameViewListener {
 	public void handleLaySeige(Army army, City city) throws TargetNotReachedException, FriendlyCityException;
 	public void startAttack(Unit selectedUnit, Unit defendingUnit) throws FriendlyFireException, IOException;
 	public void startResolve(Army attackingArmy, Army defendingArmy) throws FriendlyFireException, IOException;
+	public void handleOccupy(Army attackingArmy, String currentLocation);
 }

@@ -47,7 +47,6 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	private VBox stickyButtons;
 	private Button initArmyBtn;
 	private Button relocateBtn;
-	private FlowPane defendingArmyBox;
 	private ArrayList<CityView> cities;
 	
 	public GamePane(GameView gameView, City currentCity) {
@@ -55,31 +54,32 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		this.currentCity = currentCity;
 		this.cities = new ArrayList<>();
 		for(City c: gameView.getAvailableCities())
-			this.cities.add(new CityView(gameView, c));
+			this.cities.add(new CityView(gameView,this, c));
 		
 		this.initArmyBtn = new Button("Initiate Army");
 		this.setRelocateBtn(new Button("Relocate Unit"));
 		this.stickyButtons = new VBox();
 		this.actionBox = new ActionBox(gameView, this.stickyButtons);
 		this.mainPane = new StackPane();
-		this.cityView = this.getCityViewByName(currentCity.getName());
+		
+		CityView firstCity =  this.getCityViewByName(currentCity.getName());
+		this.setCityView(firstCity);
 		
 		this.mapView = new MapView(gameView, mainPane);
-		this.defendingArmyBox = new FlowPane();
-		this.cityView.add(defendingArmyBox,0,1,4,1);
+		
 		this.setMaxWidth(this.gameView.getWidth());
 		this.infoBar = new InfoBar(gameView);
 		this.mapBtn = new Button("Map");
 		
-		for(BuildingBlock b : this.cityView.getBlocks())
-			b.setListener(actionBox, this);
+//		for(BuildingBlock b : this.cityView.getBlocks())
+//			b.setListener(actionBox, this);
 		mapView.setListener(this);
 		this.buildingsToBuild = new ArrayList<String>();
-		buildingsToBuild.add("Market 1500");
-		buildingsToBuild.add("Farm 1000");
-		buildingsToBuild.add("ArcheryRange 1500");
-		buildingsToBuild.add("Barracks 2000");
-		buildingsToBuild.add("Stable 2500");
+		buildingsToBuild.add("Market");
+		buildingsToBuild.add("Farm");
+		buildingsToBuild.add("ArcheryRange");
+		buildingsToBuild.add("Barracks");
+		buildingsToBuild.add("Stable");
 		mapBtn.setOnAction(e->{
 			if(this.mainPane.getChildren().contains(mapView))
 				this.mainPane.getChildren().remove(mapView);
@@ -95,7 +95,6 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		
 		stickyButtons.getChildren().addAll(mapBtn);
 		this.mapView.setListener(actionBox);
-		this.mainPane.getChildren().add(cityView);
 		this.mainPane.setAlignment(Pos.CENTER);
 		this.setTop(infoBar);
 		this.setBottom(actionBox);
@@ -201,7 +200,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		case "Stable": unitType = "Cavalry"; break;
 		}
 		try {
-			this.gameView.getPlayer().recruitUnit(unitType, this.currentCity.getName());
+			this.gameView.getPlayer().recruitUnit(unitType, this.cityView.getCity().getName());
 			
 		} catch (BuildingInCoolDownException | MaxRecruitedException | NotEnoughGoldException e) {
 			AlertPane alert = new AlertPane(this.mainPane, 500, 300, "Cannot recruit as "+ e.getMessage());
@@ -213,7 +212,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		armyImg.setFitWidth(100);
 		armyImg.setPreserveRatio(true);
 		armyImg.setOnMouseClicked(e->actionBox.onArmyClicked(this.currentCity.getDefendingArmy(), new Button("Target")));
-		defendingArmyBox.getChildren().add(armyImg);
+		this.cityView.getDefendingArmyBox().getChildren().add(armyImg);
 		displayDefendingArmy();
 		
 		this.actionBox.getDetailsBox().setBuilding(building);
@@ -223,13 +222,13 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	
 
 	public void displayDefendingArmy() {
-		defendingArmyBox.getChildren().clear();
+		this.cityView.getDefendingArmyBox().getChildren().clear();
 		ImageView armyImg = new ImageView("file:resources/images/army/army-icon.png");
 		armyImg.setFitWidth(100);
 		armyImg.setPreserveRatio(true);
-		armyImg.setOnMouseClicked(e->actionBox.onArmyClicked(this.currentCity.getDefendingArmy()));
-		defendingArmyBox.getChildren().add(armyImg);
-		for(Unit u : this.currentCity.getDefendingArmy().getUnits()) {
+		armyImg.setOnMouseClicked(e->actionBox.onArmyClicked(this.cityView.getCity().getDefendingArmy()));
+		this.cityView.getDefendingArmyBox().getChildren().add(armyImg);
+		for(Unit u : this.cityView.getCity().getDefendingArmy().getUnits()) {
 			ImageView img = new ImageView();
 			if(u instanceof Archer)
 				img.setImage(new Image("file:resources/images/army/archer"+u.getLevel()+".png"));
@@ -244,7 +243,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 			
 			});
 			//TODO units are added here
-			defendingArmyBox.getChildren().add(img);
+			this.cityView.getDefendingArmyBox().getChildren().add(img);
 		}
 		
 	}
@@ -252,10 +251,13 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	
 	@Override
 	public void onMapViewOpen() {
+		
 		for(City c: gameView.getAvailableCities())
 			if(gameView.getControlledCities().contains(c))
 				this.mapView.locateDefendingArmy(c.getName(), c.getDefendingArmy());
 		int i=0;
+		for(Army a: gameView.getControlledArmies())
+			mapView.getMapArmies().add(new MapArmy(mapView,a, null, 50));
 		for(Army a: gameView.getControlledArmies()) {
 			this.mapView.locateArmies(a, i);
 			i++;
@@ -274,9 +276,17 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	}
 
 
-
+//TODO
 	public void setCityView(CityView cityView) {
+		if(this.cityView != null)
+			this.getMainPane().getChildren().remove(this.cityView);
 		this.cityView = cityView;
+		this.getMainPane().getChildren().add(cityView);
+		
+		for(BuildingBlock b : this.cityView.getBlocks())
+			b.setListener(actionBox, this);
+		this.currentCity = this.cityView.getCity();
+		displayDefendingArmy();
 	}
 
 

@@ -16,9 +16,10 @@ public class DetailsBox extends TextArea {
 	private Building building;
 	private Army army;
 	private Unit unit;
-	
+	private String state;
 	public DetailsBox() {
-		this.setText("Details Box");
+		this.setText("");
+		this.state = "start";
 		this.setEditable(false);
 	}
 
@@ -28,7 +29,7 @@ public class DetailsBox extends TextArea {
 
 	public void setBuilding(Building building) {
 		this.building = building;
-		
+		this.state = "building";
 		if(building == null) {
 			this.setText("You can build here");
 		}else {
@@ -38,7 +39,15 @@ public class DetailsBox extends TextArea {
 		
 	}
 
-	
+	public void update() {
+		switch(this.state) {
+		case "building": setBuilding(building); break;
+		case "army": setArmy(army); break;
+		case "unit" :setUnit(unit); break;
+		default: this.setText("");
+		
+		}
+	};
 	public void addText(String s) {
 		String text = this.getText();
 		this.setText(text +="\n"+s);
@@ -50,6 +59,7 @@ public class DetailsBox extends TextArea {
 	public void setArmy(Army army) {
 		this.army= army;
 		this.setText(army.toString());
+		this.state = "army";
 	}
 
 	public Unit getUnit() {
@@ -59,5 +69,8 @@ public class DetailsBox extends TextArea {
 	public void setUnit(Unit unit) {
 		this.unit = unit;
 		this.setText(unit.toString());
-	};
+		this.state = "unit";
+	}
+
+	
 }

@@ -1,5 +1,6 @@
 package view;
 
+import engine.City;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -11,8 +12,8 @@ import javafx.scene.layout.HBox;
 public class InfoBar extends BorderPane{
 	private GameView gameView;
 	private Label foodLabel;
-	
-
+	private City city;
+	private Label cityLabel;
 	private Label goldLabel;
 	private Label turnLabel;
 	
@@ -26,7 +27,7 @@ public class InfoBar extends BorderPane{
 		this.foodLabel = new Label(gameView.getFood()+"");
 		this.goldLabel = new Label(gameView.getTreasury()+"");
 		this.turnLabel = new Label("Turn: "+  gameView.getTurnCount());
-
+		this.cityLabel = new Label(gameView.getPlayerCity());
 		HBox keepUpDataBox = new HBox();
 		
 		ImageView goldIcon  = new ImageView("file:resources/images/icons/gold2.png");
@@ -45,7 +46,7 @@ public class InfoBar extends BorderPane{
 
 		HBox playerDataBox = new HBox();
 		playerDataBox.getChildren().add(new Label(gameView.getPlayerName()));
-		playerDataBox.getChildren().add(new Label(gameView.getPlayerCity()));
+		playerDataBox.getChildren().add(cityLabel);
 		playerDataBox.setAlignment(Pos.CENTER);
 		
 		this.setCenter(playerDataBox);
@@ -65,10 +66,10 @@ public class InfoBar extends BorderPane{
 	}
 
 	public void update() {
-		foodLabel.setText(this.gameView.getFood()+"");
-		goldLabel.setText(this.gameView.getTreasury()+"");
+		foodLabel.setText(String.format("%.1f", this.gameView.getFood()));
+		goldLabel.setText(String.format("%.1f",this.gameView.getTreasury()));
 		turnLabel.setText("Turn: " + this.gameView.getTurnCount());
-		
+		cityLabel.setText(this.gameView.getGamePane().getCurrentCity().getName());
 	}
 	
 	
@@ -95,5 +96,13 @@ public class InfoBar extends BorderPane{
 
 	public void setTurnLabel(Label turnLabel) {
 		this.turnLabel = turnLabel;
+	}
+
+	public Label getCityLabel() {
+		return cityLabel;
+	}
+
+	public void setCityLabel(Label cityLabel) {
+		this.cityLabel = cityLabel;
 	}
 }

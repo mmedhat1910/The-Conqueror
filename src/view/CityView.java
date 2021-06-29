@@ -23,13 +23,27 @@ public class CityView extends GridPane {
 	private GameView gameView;
 	private City city;
 	private BuildingBlock[] blocks;
-	
+	private FlowPane defendingArmyBox;
+	private GamePane gamePane;
 	
 
 	
 
-	public CityView(GameView gameView, City c) {
+	public FlowPane getDefendingArmyBox() {
+		return defendingArmyBox;
+	}
+
+
+	public void setDefendingArmyBox(FlowPane defendingArmyBox) {
+		this.defendingArmyBox = defendingArmyBox;
+	}
+
+
+	public CityView(GameView gameView,GamePane gPane, City c) {
 		this.gameView = gameView;
+		this.gamePane = gPane;
+		this.defendingArmyBox = new FlowPane();
+		this.add(defendingArmyBox,0,1,4,1);
 		this.setMaxWidth(this.gameView.getWidth());
 		this.blocks = new BuildingBlock[5];
 		this.city = c;
@@ -57,7 +71,7 @@ public class CityView extends GridPane {
 				pane.getChildren().add(new Label(u.getClass().getSimpleName()+" " +u.getLevel()));
 			this.add(pane, 0, i+2, 5, 1);
 		}
-		
+//		gamePane.displayDefendingArmy();
 	}
 	
 
@@ -82,6 +96,8 @@ public class CityView extends GridPane {
 		for(int i =0;i<gameView.getControlledArmies().size();i++) {
 			Army army = gameView.getControlledArmies().get(i);
 			System.out.println(army.getCurrentStatus());
+			int row = i+2;
+			this.getChildren().removeIf(node->getRowIndex(node) ==row);
 			FlowPane pane = new FlowPane();
 			ImageView icon = new ImageView("file:resources/images/army/army-icon.png");
 			icon.setFitWidth(100);
@@ -92,15 +108,30 @@ public class CityView extends GridPane {
 			icon.setOnMouseClicked(e->gameView.getGamePane().getActionBox().onArmyClicked(army, targetBtn));
 			pane.getChildren().add(icon);
 			for(Unit u: army.getUnits()) {
-				pane.getChildren().add(new Button(u.getClass().getSimpleName()+" " +u.getLevel()));
+				System.out.println(u);
+				Button unitBtn = new Button(u.getClass().getSimpleName()+" " +u.getLevel());
+				unitBtn.setOnAction(e1->{
+					gamePane.getActionBox().onUnitClicked(u, gamePane.getRelocateBtn());
+				});
+				pane.getChildren().add(unitBtn);
 				
 			}
-			int row = i+2;
+			
 			if(army.getCurrentStatus()!= Status.IDLE)
 				this.getChildren().removeIf(node->getRowIndex(node) ==row);
 			else
 				this.add(pane, 0, row, 5, 1);
 		}
+	}
+
+
+	public GamePane getGamePane() {
+		return gamePane;
+	}
+
+
+	public void setGamePane(GamePane gamePane) {
+		this.gamePane = gamePane;
 	}
 
 }
