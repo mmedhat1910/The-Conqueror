@@ -70,7 +70,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		this.setMaxWidth(this.gameView.getWidth());
 		this.infoBar = new InfoBar(gameView);
 		this.mapBtn = new Button("Map");
-		
+		mapBtn.getStyleClass().add("map-btn");
 //		for(BuildingBlock b : this.cityView.getBlocks())
 //			b.setListener(actionBox, this);
 		mapView.setListener(this);
@@ -125,7 +125,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 
 	@Override
 	public void onBuildingClicked(Building b,Button... buttons) {
-		this.setBottom(actionBox);
+
 	}
 
 
@@ -251,17 +251,8 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	
 	@Override
 	public void onMapViewOpen() {
+		this.mapView.updateMap();
 		
-		for(City c: gameView.getAvailableCities())
-			if(gameView.getControlledCities().contains(c))
-				this.mapView.locateDefendingArmy(c.getName(), c.getDefendingArmy());
-		int i=0;
-		for(Army a: gameView.getControlledArmies())
-			mapView.getMapArmies().add(new MapArmy(mapView,a, null, 50));
-		for(Army a: gameView.getControlledArmies()) {
-			this.mapView.locateArmies(a, i);
-			i++;
-		}
 	}
 	
 	

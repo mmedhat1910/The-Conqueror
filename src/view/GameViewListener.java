@@ -14,7 +14,7 @@ public interface GameViewListener {
 	public void onStartGame();
 	public void onEndTurn();
 	public void updateInfo();
-	public Army onInitArmy(City city,Unit unit);
+	public void onInitArmy(City city,Unit unit);
 //	public void exitGame();
 	public void onRelocateUnit(Army army, Unit unit) throws MaxCapacityException;
 	public void onTargetSet(Army army, String cityName);

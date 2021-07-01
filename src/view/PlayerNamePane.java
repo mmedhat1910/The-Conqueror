@@ -55,7 +55,8 @@ public class PlayerNamePane extends BorderPane implements EventHandler<ActionEve
 	public void handle(ActionEvent arg0) {
 		String playerName;
 		if(nameField.getText().equals("")) 
-			playerName = "Player 1";
+			playerName = "Maestro";
+		//TODO change this
 					
 		else {
 			playerName = nameField.getText();

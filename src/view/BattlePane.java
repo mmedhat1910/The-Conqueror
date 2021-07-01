@@ -57,9 +57,12 @@ public class BattlePane extends BorderPane{
 //		this.actionButtons.getChildren().add(surrender);
 		
 		
+		
 		attack.setOnAction(e-> handleAttack());
 		autoResolve.setOnAction(e->handleAutoresolve());
-		checkIfBattleEnded();
+		if(checkIfBattleEnded()) {
+			gameView.getListener().handleOccupy(attackingArmy, defendingArmy.getCurrentLocation());
+		}
 		this.setBottom(actionArea);
 		this.setCenter(mainPane);
 		showArmies();
@@ -74,22 +77,24 @@ public class BattlePane extends BorderPane{
 		addLog("You decided to autoresolve the battle");
 		gameView.onAutoResolve(attackingArmy, defendingArmy);
 		
+		
 	}
 
 	private void handleAttack() {
 		
 		PauseTransition pause = new PauseTransition(Duration.seconds(1));
 		if(this.attackingUnit != null && this.defendingUnit != null) {
+			
 			int defCount = defendingUnit.getCurrentSoldierCount();
 			addLog("Your turn");
 			gameView.onAttack(attackingUnit, defendingUnit);
 			int diff = defCount-defendingUnit.getCurrentSoldierCount();
 			addLog("Defender lost "+ diff+" soldiers");
+			if(checkIfBattleEnded()) {
+				return;
+			}
 			pause.setOnFinished(e-> {
-				if(defendingArmy.getUnits().size()== 0 || attackingArmy.getUnits().size()==0) {
-					checkIfBattleEnded();
-					return;
-				}
+				
 				int randomIndex; addLog("Defenders turn");
 				randomIndex = (int) (Math.random()*defendingArmy.getUnits().size());
 				defendingUnit = defendingArmy.getUnits().get(randomIndex);
@@ -102,12 +107,16 @@ public class BattlePane extends BorderPane{
 				attackingUnit = null; defendingUnit =null;
 			});
 			pause.playFromStart();
+		if(checkIfBattleEnded())
+			return;
 			
 		}else if(attackingUnit==null){
 			addLog("Please choose a unit to attack with");
 		}else {
 			addLog("Please choose defender's unit to attack");
 		}
+		
+		
 	}
 
 	public GameView getGameView() {
@@ -150,21 +159,18 @@ public class BattlePane extends BorderPane{
 		showArmies();
 	}
 	
-	public void checkIfBattleEnded() {
+	public boolean checkIfBattleEnded() {
 		String msg= ""; boolean ended = false;
 		Button exitBattle = new Button("Exit");
 		if(attackingArmy.getUnits().size() == 0) {
 			msg = "You lost";
 			ended = true;
-			gameView.getPlayer().getControlledArmies().remove(attackingArmy);
 		}
 		else if (defendingArmy.getUnits().size()== 0) {
 			msg ="You win";
 			ended = true;
-			gameView.getListener().handleOccupy(attackingArmy, defendingArmy.getCurrentLocation());
 		}
 		
-		System.out.println(msg);
 		exitBattle.setOnAction(e->{
 			gameView.setPane(gameView.getGamePane());
 			gameView.getGamePane().getMapView().updateMap();
@@ -172,7 +178,10 @@ public class BattlePane extends BorderPane{
 		if(ended) {
 			this.mainPane.getChildren().add(new ActionAlert(mainPane, "Battle is over", 600, 400, msg, exitBattle));
 			gameView.getGamePane().getActionBox().addStatus(msg +" the battle");
+			this.attack.setDisable(true);
+			this.autoResolve.setDisable(true);
 		}
+		return ended;
 	}
 	
 	public void setGameView(GameView gameView) {

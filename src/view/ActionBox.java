@@ -4,6 +4,7 @@ import buildings.Building;
 import buildings.EconomicBuilding;
 import buildings.MilitaryBuilding;
 import engine.City;
+import exceptions.FriendlyCityException;
 import exceptions.MaxCapacityException;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -28,41 +29,43 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 	private TextArea statusBox;
 
 	public ActionBox(GameView gameView, VBox stickyButtons) {
-
+		this.setMinWidth(gameView.getWidth());
 		this.gameView = gameView;
 		this.stickyButtons = stickyButtons;
 		this.getStyleClass().add("action-box");
-		this.setMaxHeight(gameView.getHeight() * 0.15);
-		this.detailsBox = new DetailsBox();
-		this.detailsBox.setPrefWidth(gameView.getWidth() * 0.3);
+		this.setMaxHeight(gameView.getHeight() * 0.1);
+		this.detailsBox = new DetailsBox(gameView);
+		this.detailsBox.setMinWidth(gameView.getWidth() * 0.35);
+		this.detailsBox.setMaxWidth(gameView.getWidth() * 0.35);
 
 		this.actionButtons = new VBox();
-		this.actionButtons.setPrefWidth(gameView.getWidth() * 0.2);
-
+		this.actionButtons.setMinWidth(gameView.getWidth() * 0.20);
+		this.actionButtons.setMaxWidth(gameView.getWidth() * 0.20);
+		
 		this.statusBox = new TextArea();
 		this.statusBox.setEditable(false);
-		this.statusBox.setPrefWidth(gameView.getWidth() * 0.3);
+		this.statusBox.setMinWidth(gameView.getWidth() * 0.35);
+		this.statusBox.setMaxWidth(gameView.getWidth() * 0.35);
+		this.statusBox.setMaxHeight(gameView.getHeight()*0.2);
 		this.statusBox.setText(
 				"Hello " + gameView.getPlayerName() + "\n*Tip: Start by building a market to avoid being broke");
-
+		
 		this.getChildren().add(detailsBox);
 		this.getChildren().add(actionButtons);
 		this.getChildren().add(statusBox);
 		this.getChildren().add(stickyButtons);
 
-		this.setAlignment(Pos.CENTER);
+		this.setAlignment(Pos.CENTER_LEFT);
 
 	}
 
 	@Override
 	public void onBuildingClicked(Building building, Button... buttons) {
-		System.out.println("dakhalna on building clicked");
 		this.actionButtons.getChildren().clear();
 		this.actionButtons.getChildren().addAll(buttons);
 		this.detailsBox.setBuilding(building);
 
 	}
-
 	public void onUnitClicked(Unit u, Button... buttons) {
 		this.detailsBox.setUnit(u);
 		this.actionButtons.getChildren().clear();
@@ -81,7 +84,6 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 			if(a.getCurrentStatus()==Status.IDLE && a.getCurrentLocation().equals(unit.getParentArmy().getCurrentLocation()) && a != unit.getParentArmy())
 				armyNames.getItems().add(a.getArmyName());
 		}
-		System.out.println(unit.getParentArmy().getArmyName());
 		if(!stringContains(unit.getParentArmy().getArmyName(), "defenders"))
 			armyNames.getItems().add("Defending Army");
 		
@@ -143,8 +145,10 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 				if (c.getName().equals(a.getCurrentLocation())) {
 					detailsBox.addText("Turns Beseiging: " + c.getTurnsUnderSiege());
 					battleBtn.setOnAction(e -> gameView.enterBattle(a, c));
+					
 				}
-			this.actionButtons.getChildren().add(battleBtn);
+//			if(a.getCurrentStatus() == Status.IDLE)
+//				this.actionButtons.getChildren().add(battleBtn);
 
 		}
 		if (buttons.length != 0)
@@ -153,18 +157,7 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 
 	@Override
 	public void onCityClicked(String cityName, Button... buttons) {
-		this.actionButtons.getChildren().clear();
-		for (City c : gameView.getControlledCities()) {
-			if (c.getName().equals(cityName)) {
-				this.detailsBox.setText(cityName + " is Controlled");
-				this.actionButtons.getChildren().add(buttons[0]);
-			} else {
-				this.detailsBox.setText(cityName + " is Enemy");
-				if (c.isUnderSiege())
-					this.actionButtons.getChildren().add(buttons[1]);
-			}
-
-		}
+		
 
 	}
 	

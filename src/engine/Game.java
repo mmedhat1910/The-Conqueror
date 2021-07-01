@@ -278,6 +278,7 @@ public class Game {
 				city = c;
 		player.getControlledCities().add(city);
 		player.getControlledArmies().remove(a);
+		a.setInitialLocation(cityName);
 		a.setArmyName(cityName+" defenders");
 		city.setDefendingArmy(a);
 		city.setUnderSiege(false);
@@ -329,16 +330,7 @@ public class Game {
 	public boolean isGameOver() {
 		return player.getControlledCities().size() == availableCities.size() || currentTurnCount > maxTurnCount;
 		
-//		if(this.currentTurnCount > this.maxTurnCount)
-//			return true;
-//		boolean conqueredAll = true;
-//		for(City city : this.getAvailableCities())
-//			if(!player.getControlledCities().contains(city))
-//				conqueredAll = false;
-//		
-//		if(conqueredAll)
-//			return true;
-//		return false;
+
 	}
 	
 	
@@ -365,6 +357,7 @@ public class Game {
 			e.printStackTrace();
 		}
 		System.out.println(g.player.getControlledCities().get(0).getMilitaryBuildings().get(0).getLevel());
+		System.out.println(Math.atan2(3,4));
 
 		
 		

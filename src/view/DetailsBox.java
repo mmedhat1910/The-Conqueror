@@ -17,10 +17,12 @@ public class DetailsBox extends TextArea {
 	private Army army;
 	private Unit unit;
 	private String state;
-	public DetailsBox() {
+	public DetailsBox(GameView gameView) {
 		this.setText("");
 		this.state = "start";
 		this.setEditable(false);
+		this.getStyleClass().add("details-box");
+		this.setMaxHeight(gameView.getHeight()*0.2);
 	}
 
 	public Building getBuilding() {

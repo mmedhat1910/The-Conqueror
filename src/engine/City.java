@@ -11,6 +11,7 @@ public class City {
 	private Army defendingArmy;
 	private int turnsUnderSiege;
 	private boolean underSiege;
+	private boolean inBattle;
 	
 	public City(String name) {
 		this.name = name;
@@ -58,6 +59,16 @@ public class City {
 
 	public ArrayList<Building> getAllBuildings() {
 		return allBuildings;
+	}
+
+
+	public boolean isInBattle() {
+		return inBattle;
+	}
+
+
+	public void setInBattle(boolean inBattle) {
+		this.inBattle = inBattle;
 	}
 	
 	

@@ -1,5 +1,6 @@
 package view;
 
+import engine.City;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -11,7 +12,9 @@ public class MapCity extends ImageView{
 	private MapView parent;
 	private double xCoordinate;
 	private double yCoordinate;
-	public MapCity(String cityName, MapView p, double xCoordinate, double yCoordinate) {
+	private GameView gameView;
+	public MapCity(String cityName, MapView p, GameView gameV, double xCoordinate, double yCoordinate) {
+		this.gameView = gameV;
 		this.setFitWidth(300);
 		this.cityName = cityName;
 		this.parent = p;
@@ -27,13 +30,28 @@ public class MapCity extends ImageView{
 			parent.onVisitClicked(cityName);
 		});
 		
-		Button attackBtn = new Button("Attack "+cityName);
+
 		this.setOnMouseClicked(e->{
-			parent.notifyListenersCityClicked(cityName, visitBtn,attackBtn);
+			ActionBox action = this.gameView.getGamePane().getActionBox();
+			action.getActionButtons().getChildren().clear();
+			City c = getCityByName(this.cityName);
+			if (gameView.getControlledCities().contains(c)) {
+				action.getDetailsBox().setText(cityName + " is Controlled");
+				action.getActionButtons().getChildren().add(visitBtn);
+			}else {
+				action.getDetailsBox().setText(cityName + " is Enemy");
+			}
 		});
+	
 	}
 	
 	
+	public City getCityByName(String name) {
+		for(City c: gameView.getAvailableCities())
+			if(c.getName().equals(name))
+				return c;
+		return null;
+	}
 	
 	public String getCityName() {
 		return cityName;

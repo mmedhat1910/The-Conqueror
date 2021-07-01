@@ -83,14 +83,22 @@ public class GameController extends Application implements GameViewListener{
 		this.view.setPlayer(this.model.getPlayer());
 		this.view.setAvailableCities(model.getAvailableCities());
 		this.view.setControlledCities(model.getPlayer().getControlledCities());
-		
+		this.view.setDistances(model.getDistances());
 		this.view.setControlledArmies(model.getPlayer().getControlledArmies());
 		this.view.startGame();
 	}
 	
 	@Override
 	public void onEndTurn() {
-		if(model.getCurrentTurnCount() == model.getMaxTurnCount()||model.isGameOver()) {
+		System.out.println("-------------------------");
+		System.out.println("Controlled cities :"+"\n~~~~");
+		for(City c: model.getPlayer().getControlledCities())
+			System.out.println(c.getName());
+		System.out.println("``````````````````````");
+		System.out.println("Controlled Armies: "+model.getPlayer().getControlledArmies().size());
+		System.out.println("-------------------------");
+
+		if(model.isGameOver()) {
 			String msg ="";
 			Button endGameBtn = new Button("End Game");
 			endGameBtn.setOnAction(e-> {
@@ -98,7 +106,7 @@ public class GameController extends Application implements GameViewListener{
 				System.exit(0);
 			});
 			msg = model.getCurrentTurnCount() == model.getMaxTurnCount()?  "You Lost" : "You Won";
-				
+			System.out.println("GameOver "+msg);
 			ActionAlert gameOverAlert = new ActionAlert(view.getGamePane().getMainPane(), "Game Over", 500, 400, msg, endGameBtn);
 			view.getGamePane().getMainPane().getChildren().add(gameOverAlert);
 			
@@ -127,7 +135,8 @@ public class GameController extends Application implements GameViewListener{
 							c.setUnderSiege(false);
 							city = c;
 						}
-					view.enterBattle(attacking, city);
+						view.enterBattle(attacking, city);
+					
 				});
 				
 			}
@@ -170,9 +179,7 @@ public class GameController extends Application implements GameViewListener{
 	}
 
 	@Override
-	public Army onInitArmy(City city,Unit unit) {
-		
-		Army created = model.getPlayer().initiateArmy(city, unit);
+	public void onInitArmy(City city,Unit unit) {
 		TextField armyNameField = new TextField();
 		armyNameField.setPromptText("Choose army name");
 		ChoiceBox<String> namesDropdown = new ChoiceBox<String>(FXCollections.observableArrayList(randomNames));
@@ -185,12 +192,14 @@ public class GameController extends Application implements GameViewListener{
 		armyNameField.setOnAction(e-> chooseBtn.setDisable(false));
 		namesDropdown.setOnAction(e->chooseBtn.setDisable(false));
 		chooseBtn.setOnAction(e-> {
+			Army created = model.getPlayer().initiateArmy(city, unit);
 			String name="";
 			if(!armyNameField.getText().equals("")) {
 				name = armyNameField.getText();
 				parent.getChildren().remove(chooseNameMsg);
 				created.setArmyName(name);	
 				view.updateCityViewState(created.getArmyName() + " initiated");
+				
 			}
 			else if (!namesDropdown.getValue().equals(namesDropdown.getItems().get(0))) {
 				
@@ -212,7 +221,6 @@ public class GameController extends Application implements GameViewListener{
 		});
 		parent.getChildren().add(chooseNameMsg);
 		
-		return created;
 		
 	}
 	

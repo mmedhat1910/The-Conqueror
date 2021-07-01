@@ -95,7 +95,6 @@ public class CityView extends GridPane {
 	public void update() {
 		for(int i =0;i<gameView.getControlledArmies().size();i++) {
 			Army army = gameView.getControlledArmies().get(i);
-			System.out.println(army.getCurrentStatus());
 			int row = i+2;
 			this.getChildren().removeIf(node->getRowIndex(node) ==row);
 			FlowPane pane = new FlowPane();
@@ -108,7 +107,6 @@ public class CityView extends GridPane {
 			icon.setOnMouseClicked(e->gameView.getGamePane().getActionBox().onArmyClicked(army, targetBtn));
 			pane.getChildren().add(icon);
 			for(Unit u: army.getUnits()) {
-				System.out.println(u);
 				Button unitBtn = new Button(u.getClass().getSimpleName()+" " +u.getLevel());
 				unitBtn.setOnAction(e1->{
 					gamePane.getActionBox().onUnitClicked(u, gamePane.getRelocateBtn());

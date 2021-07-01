@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import controllers.ControllerListener;
 import engine.City;
+import engine.Distance;
 import engine.Player;
 import exceptions.FriendlyCityException;
 import exceptions.FriendlyFireException;
@@ -16,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
@@ -35,6 +37,7 @@ public class GameView extends Stage implements ControllerListener {
 	private GamePane gamePane;
 	private BattlePane battlePane;
 	private ArrayList<City> availableCities;
+	private ArrayList<Distance> distances;
 	private double width;
 	private double height;
 	private ArrayList<City> controlledCities;
@@ -73,7 +76,7 @@ public class GameView extends Stage implements ControllerListener {
 					.add(new AlertPane(gamePane.getMainPane(), 500, 400, "Cannot Initiate more armies"));
 			return;
 		}
-		Army createdArmy = this.listener.onInitArmy(city, unit);
+		this.listener.onInitArmy(city, unit);
 //		System.out.println("Initiated");
 //		System.out.println(getPlayer().getControlledArmies().size());
 		this.controlledArmies = getPlayer().getControlledArmies();
@@ -100,10 +103,14 @@ public class GameView extends Stage implements ControllerListener {
 		for (City c : availableCities)
 			if (!controlledCities.contains(c))
 				cityChoices.getItems().add(c.getName());
-		cityChoices.setValue(cityChoices.getItems().get(0));
+		Node msgContent = new Label("All Cities are controlled, End game to win");
+		if(cityChoices.getItems().size()>0) {
+			cityChoices.setValue(cityChoices.getItems().get(0));
+			msgContent = cityChoices;
+		}
 		Button targetFromMsg = new Button("Target");
 		MessagePane chooseTargetCity = new MessagePane(gamePane.getMainPane(), "Choose Target City", 500, 400,
-				targetFromMsg, cityChoices);
+				targetFromMsg, msgContent);
 		gamePane.getMainPane().getChildren().add(chooseTargetCity);
 		targetFromMsg.setOnAction(e -> {
 			String targetCity = cityChoices.getValue();
@@ -123,16 +130,23 @@ public class GameView extends Stage implements ControllerListener {
 	}
 
 	public void onReachingTarget(Army army) {
-		String status = army.getArmyName() + " reached " + army.getCurrentLocation();
+		City city = getCityByName(army.getCurrentLocation());
 		Button laySeigeBtn = new Button("Lay Seige");
 		Button battleBtn = new Button("Start Battle");
+		String status = army.getArmyName() + " reached " + army.getCurrentLocation();
+		ActionAlert laySeigeMessage = new ActionAlert(gamePane.getMainPane(), "Action Needed", 600, 400, status,	laySeigeBtn, battleBtn);
 		gamePane.getActionBox().addStatus(status);
 		army.setTargetReached(false);
+		if(city.isInBattle()) {
+			gamePane.getActionBox().addStatus("You tried to attacked a controlled city");
+			gamePane.getActionBox().addStatus("The army entered the city");
+			city.setInBattle(false);
+			
+			return;
+		}
+		city.setInBattle(true);
 		laySeigeBtn.setOnAction(e -> System.out.println("Laysiege clicked"));
 		battleBtn.setOnAction(e -> System.out.println("Enter Battle"));
-		City city = getCityByName(army.getCurrentLocation());
-		ActionAlert laySeigeMessage = new ActionAlert(gamePane.getMainPane(), "Action Needed", 600, 400, status,
-				laySeigeBtn, battleBtn);
 		laySeigeBtn.setOnAction(e -> {
 			try {
 				this.listener.handleLaySeige(army, city);
@@ -149,11 +163,14 @@ public class GameView extends Stage implements ControllerListener {
 			gamePane.getMainPane().getChildren().remove(laySeigeMessage);
 			this.enterBattle(army, city);
 		});
+		
 		gamePane.getMainPane().getChildren().add(laySeigeMessage);
+		
 
 	}
 
 	public void enterBattle(Army a, City c) {
+		
 		this.battlePane = new BattlePane(this, a, c.getDefendingArmy());
 		setPane(battlePane);
 	}
@@ -165,7 +182,7 @@ public class GameView extends Stage implements ControllerListener {
 		} catch (FriendlyFireException | IOException e) {
 			gamePane.getMainPane().getChildren().add(new AlertPane(battlePane.getMainPane(), 500, 600, e.getMessage()));
 		}
-		battlePane.update();
+		
 
 	}
 
@@ -181,6 +198,7 @@ public class GameView extends Stage implements ControllerListener {
 	public void visitCity(String cityName) {
 		CityView view = gamePane.getCityViewByName(cityName);
 		gamePane.setCityView(view);
+		gamePane.getInfoBar().update();
 		gamePane.onExitMap();
 		
 	}
@@ -327,6 +345,14 @@ public class GameView extends Stage implements ControllerListener {
 
 	public void setPane(Pane pane) {
 		this.getScene().setRoot(pane);
+	}
+
+	public ArrayList<Distance> getDistances() {
+		return distances;
+	}
+
+	public void setDistances(ArrayList<Distance> distances) {
+		this.distances = distances;
 	}
 
 }

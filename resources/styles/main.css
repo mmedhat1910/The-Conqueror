@@ -3,6 +3,12 @@
 	src: url('file:resources/fonts/enchanted_land.otf');
 }
 
+.root{
+    -fx-font-size: 16pt;
+    -fx-font-family: "Times New Roman";
+
+}
+
 .get-name-panel {
 	-fx-background-image: url('file:resources/images/backgrounds/bg2.jpeg');
 	-fx-background-repeat: no-repeat;
@@ -61,6 +67,7 @@
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: cover;
 	-fx-background-position: center center;
+	-fx-height:150px;
 	/*-fx-font-family	: 'Enchanted Land';*/
 	
 }
@@ -100,6 +107,14 @@ build-dropdown > .label { -fx-text-fill: white; }
 	-fx-text-fill:black;
 }
 
+.map-btn{
+	-fx-background-image: url('file:resources/images/backgrounds/battle_lowAlpha.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: cover;
+	-fx-background-position: center center;
+	-fx-text-fill:black;
+}
+
 .battle-view{
 	-fx-background-image: url('file:resources/images/backgrounds/battle_lowAlpha.png');
 	-fx-background-repeat: no-repeat;
@@ -109,4 +124,36 @@ build-dropdown > .label { -fx-text-fill: white; }
 }
 .battle-view > .label{
 	-fx-text-fill:black;
+}
+.action-box > .text-area{
+	-fx-text-fill :rgb(96, 62, 27);
+	-fx-font-weight:bold;
+}
+.action-box > .text-area .content {
+	-fx-background-color: rgba(0,0,0,0);
+	-fx-background-image: url('file:resources/images/backgrounds/textarea-bg.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: 100% 100%;
+	-fx-background-position: center center;
+	-fx-padding:10px 0 0 45px;
+	
+}
+
+
+
+.text-area {
+    -fx-background-color: rgba(53,89,119,0.0);
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
 }

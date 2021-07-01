@@ -74,11 +74,8 @@ public class BuildingBlock {
 			if (this.building == null) {
 				for (CityViewListener l : this.listeners)
 					l.onBuildingClicked(this.building, buildBtn);
-				System.out.println("inside if");
-			}else
+			}else 
 				notifyListenersOnBuild();
-			System.out.println("Building clicked "+building);
-			System.out.println(city.getName());
 		});
 	}
 

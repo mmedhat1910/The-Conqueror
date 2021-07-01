@@ -10,6 +10,7 @@ public class Army {
 	private int distancetoTarget; //Initially -1
 	private String target;
 	private String currentLocation;
+	private String initialLocation;
 	private boolean targetReached = false;
 	
 	private String armyName;
@@ -18,6 +19,7 @@ public class Army {
 	public Army(String... args) {
 		this.currentLocation= args[0]; 
 		this.currentStatus = Status.IDLE;
+		this.initialLocation = this.currentLocation;
 		this.units = new ArrayList<Unit>();
 		this.distancetoTarget = -1;
 		this.target = "";
@@ -123,6 +125,12 @@ public class Army {
 	}
 	public void setTargetReached(boolean targetReached) {
 		this.targetReached = targetReached;
+	}
+	public String getInitialLocation() {
+		return initialLocation;
+	}
+	public void setInitialLocation(String initialLocation) {
+		this.initialLocation = initialLocation;
 	}
 
 	
