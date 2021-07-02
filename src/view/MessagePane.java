@@ -10,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 
 public class MessagePane extends BorderPane{
 	private HBox buttonsBar;
@@ -21,9 +22,10 @@ public class MessagePane extends BorderPane{
 	private double width;
 	private double height;
 	private Pane parent;
+	private GameView gameView;
 	
-	
-	public MessagePane(Pane pane,String title,double width, double height , Button btn, Node... content) {
+	public MessagePane(GameView gameView,Pane pane,String title,double width, double height , CustomButton btn, Node... content) {
+		this.gameView = gameView;
 		this.parent = pane;
 		this.getStyleClass().add("message-pane");
 		this.titleBox = new HBox();
@@ -31,21 +33,33 @@ public class MessagePane extends BorderPane{
 		this.height = height;
 		this.content = new VBox();
 		this.buttonsBar = new HBox();
-		this.titleBox.getChildren().add(new Label(title));
+		Label l = new Label(title);
+		this.titleBox.getStyleClass().add("title-box");
+		this.titleBox.getChildren().add(l);
 		this.content.getChildren().addAll(content);
 		
-		Button exitBtn = new Button("Cancel");
-		exitBtn.setOnAction(e->parent.getChildren().remove(this));
+		CustomButton cancel = new CustomButton("Cancel",'m');
+		cancel.setOnMouseClicked(e->{
+			parent.getChildren().remove(this); 
+//			this.gameView.getGamePane().getActionBox().toggleEnableBtns();
+//			this.gameView.getGamePane().getInfoBar().toggleEnableBtns();
+			});
 		if(btn != null)
 			this.buttonsBar.getChildren().add(btn);
-		this.buttonsBar.getChildren().add(exitBtn);
-		
-		
+		btn.setOnMouseClicked(e->{
+			btn.getOnMouseClicked();
+//			this.gameView.getGamePane().getActionBox().toggleEnableBtns();
+//			this.gameView.getGamePane().getInfoBar().toggleEnableBtns();
+		});
+		this.buttonsBar.getChildren().add(cancel);
+		this.buttonsBar.setSpacing(10);
+//		this.gameView.getGamePane().getInfoBar().toggleEnableBtns();
+//		this.gameView.getGamePane().getActionBox().toggleEnableBtns();
 		
 		this.setMaxHeight(height);
 		this.setMaxWidth(width);
-		this.buttonsBar.setAlignment(Pos.CENTER_RIGHT);
 		this.content.setAlignment(Pos.CENTER);
+		this.buttonsBar.setAlignment(Pos.CENTER);
 		this.titleBox.setAlignment(Pos.CENTER);
 		
 

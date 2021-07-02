@@ -33,9 +33,9 @@ public class BuildingBlock {
 	private CityView cityView;
 	private ArrayList<CityViewListener> listeners;
 
-	Button buildBtn;
-	Button upgradeBtn;
-	Button recruitBtn;
+	CustomButton buildBtn;
+	CustomButton upgradeBtn;
+	CustomButton recruitBtn;
 
 	public BuildingBlock(Building b, GameView gameView, CityView cityView) {
 		this.gameView = gameView;
@@ -45,24 +45,24 @@ public class BuildingBlock {
 		this.maxWidth = gameView.getWidth() * 0.19;
 		this.image = new ImageView();
 
-		buildBtn = new Button("Build");
-		upgradeBtn = new Button("Upgrade");
-		recruitBtn = new Button("Recruit");
-
+		buildBtn = new CustomButton("Build",'l');
+		upgradeBtn = new CustomButton("Upgrade",'l');
+		recruitBtn = new CustomButton("Recruit",'l');
+		
 		this.player = this.gameView.getPlayer();
 		this.city = this.cityView.getCity();
 
-		buildBtn.setOnAction(e1 -> {
+		buildBtn.setOnMouseClicked(e1 -> {
 			for (CityViewListener l : this.listeners)
 				l.onBuild(this);
 		});
 
-		upgradeBtn.setOnAction(e2 -> {
+		upgradeBtn.setOnMouseClicked(e2 -> {
 			for (CityViewListener l : this.listeners)
 				l.onUpgrade(this);
 		});
 
-		recruitBtn.setOnAction(e3 -> {
+		recruitBtn.setOnMouseClicked(e3 -> {
 			for (CityViewListener l : this.listeners)
 				l.onRecruit(this.building, this.buildingType);
 		});
@@ -104,7 +104,7 @@ public class BuildingBlock {
 	}
 
 	private Image getBlockImage() {
-		String path = "file:resources/images/buildings/empty-block.png";
+		String path = "file:resources/images/buildings/empty-block1.png";
 		Building b = this.building;
 		if (b instanceof ArcheryRange) {
 			path = "file:resources/images/buildings/archery-range" + b.getLevel() + ".png";

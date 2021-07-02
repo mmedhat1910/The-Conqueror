@@ -25,6 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import units.Archer;
@@ -45,8 +46,8 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	private MapView mapView;
 	
 	private VBox stickyButtons;
-	private Button initArmyBtn;
-	private Button relocateBtn;
+	private CustomButton initArmyBtn;
+	private CustomButton relocateBtn;
 	private ArrayList<CityView> cities;
 	
 	public GamePane(GameView gameView, City currentCity) {
@@ -56,8 +57,8 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		for(City c: gameView.getAvailableCities())
 			this.cities.add(new CityView(gameView,this, c));
 		
-		this.initArmyBtn = new Button("Initiate Army");
-		this.setRelocateBtn(new Button("Relocate Unit"));
+		this.initArmyBtn = new CustomButton("Initiate Army",'l');
+		this.setRelocateBtn(new CustomButton("Relocate Unit",'l'));
 		this.stickyButtons = new VBox();
 		this.actionBox = new ActionBox(gameView, this.stickyButtons);
 		this.mainPane = new StackPane();
@@ -88,7 +89,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 			this.onMapViewOpen();
 			mapBtn.setDisable(true);
 		});
-		initArmyBtn.setOnAction(e-> System.out.println("Initiate Army clicked"));
+		initArmyBtn.setOnMouseClicked(e-> System.out.println("Initiate Army clicked"));
 //		this.actionBox.getActionButtons().getChildren().add(initArmyBtn);
 		
 		
@@ -102,6 +103,8 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		
 	}
 
+
+	
 	public Army getArmyByName(String name) {
 		for (Army a : gameView.getControlledArmies())
 			if(a.getArmyName().equals(name))
@@ -124,7 +127,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	}
 
 	@Override
-	public void onBuildingClicked(Building b,Button... buttons) {
+	public void onBuildingClicked(Building b,CustomButton... buttons) {
 
 	}
 
@@ -133,8 +136,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	@Override
 	public void onBuild(BuildingBlock block) {
 		ChoiceBox<String> choiceBox = new ChoiceBox<String>(FXCollections.observableArrayList(buildingsToBuild));
-		Button buildBtn = new Button("Build");
-		
+		CustomButton buildBtn = new CustomButton("Build",'m');
 		if(block.getBuildingType()==null)
 			buildBtn.setDisable(true);
 
@@ -148,9 +150,9 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		});
 		choiceBox.setValue(buildingsToBuild.get(0));
 		choiceBox.getStyleClass().add("build-dropdown");
-		MessagePane dialog = new MessagePane(this.mainPane,"Build", this.gameView.getWidth()*0.4, this.gameView.getHeight()*0.4, buildBtn , msgContent);
+		MessagePane dialog = new MessagePane(gameView,this.mainPane,"Build", this.gameView.getWidth()*0.4, this.gameView.getHeight()*0.4, buildBtn , msgContent);
 		
-		buildBtn.setOnAction(e->{
+		buildBtn.setOnMouseClicked(e->{
 			try {
 				Building b = block.startBuild();
 				block.notifyListenersOnBuild();
@@ -182,7 +184,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 					this.gameView.getPlayer().upgradeBuilding(block.getBuilding());
 					block.upgraded();
 				} catch (NotEnoughGoldException | BuildingInCoolDownException | MaxLevelException e) {
-					AlertPane alert = new AlertPane(this.mainPane, 500, 300, "Cannot upgrade as "+ e.getMessage());
+					AlertPane alert = new AlertPane(this.mainPane, 600, 400, "Cannot upgrade as "+ e.getMessage());
 					this.mainPane.getChildren().add(alert);
 				}
 				this.gameView.getListener().updateInfo();
@@ -203,7 +205,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 			this.gameView.getPlayer().recruitUnit(unitType, this.cityView.getCity().getName());
 			
 		} catch (BuildingInCoolDownException | MaxRecruitedException | NotEnoughGoldException e) {
-			AlertPane alert = new AlertPane(this.mainPane, 500, 300, "Cannot recruit as "+ e.getMessage());
+			AlertPane alert = new AlertPane(this.mainPane, 600, 400, "Cannot recruit as "+ e.getMessage());
 			this.mainPane.getChildren().add(alert);
 		}
 		
@@ -211,7 +213,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		ImageView armyImg = new ImageView("file:resources/images/army/army-icon.png");
 		armyImg.setFitWidth(100);
 		armyImg.setPreserveRatio(true);
-		armyImg.setOnMouseClicked(e->actionBox.onArmyClicked(this.currentCity.getDefendingArmy(), new Button("Target")));
+		armyImg.setOnMouseClicked(e->actionBox.onArmyClicked(this.currentCity.getDefendingArmy(), new CustomButton("Target",'l')));
 		this.cityView.getDefendingArmyBox().getChildren().add(armyImg);
 		displayDefendingArmy();
 		
@@ -257,7 +259,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	
 	
 	@Override
-	public void onCityClicked(String cityName, Button...buttons ) {
+	public void onCityClicked(String cityName, CustomButton...buttons ) {
 		
 		
 	}
@@ -350,13 +352,13 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	}
 
 	@Override
-	public void onUnitClicked(Unit u, Button... buttons) {
+	public void onUnitClicked(Unit u, CustomButton... buttons) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onArmyClicked(Army a, Button... buttons) {
+	public void onArmyClicked(Army a, CustomButton... buttons) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -369,11 +371,11 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		this.stickyButtons = stickyButtons;
 	}
 
-	public Button getInitArmyBtn() {
+	public CustomButton getInitArmyBtn() {
 		return initArmyBtn;
 	}
 
-	public void setInitArmyBtn(Button initArmyBtn) {
+	public void setInitArmyBtn(CustomButton initArmyBtn) {
 		this.initArmyBtn = initArmyBtn;
 	}
 
@@ -388,12 +390,12 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	}
 
 
-	public Button getRelocateBtn() {
+	public CustomButton getRelocateBtn() {
 		return relocateBtn;
 	}
 
 
-	public void setRelocateBtn(Button relocateBtn) {
+	public void setRelocateBtn(CustomButton relocateBtn) {
 		this.relocateBtn = relocateBtn;
 	}
 

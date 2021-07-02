@@ -13,12 +13,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-public class PlayerNamePane extends BorderPane implements EventHandler<ActionEvent> {
+public class PlayerNamePane extends BorderPane {
 
 	private Image logo;
 	private ImageView logoView;
 	private TextField nameField;
-	private Button nextbtn;
+	private CustomButton nextbtn;
 	private GameView gameView;
 	
 	public PlayerNamePane(GameView gameView) {
@@ -34,10 +34,24 @@ public class PlayerNamePane extends BorderPane implements EventHandler<ActionEve
 		this.nameField.setMaxWidth(0.3*gameView.getStageWidth());
 		this.nameField.getStyleClass().add("name-field");
 		
-		this.nextbtn = new Button("Next");
+		this.nextbtn = new CustomButton("Next",'l');
 		this.nextbtn.getStyleClass().add("start-btn");
 		this.nextbtn.setPrefSize(150, 50);
-		this.nextbtn.setOnAction(this);
+		this.nextbtn.setOnMouseClicked(e->{
+			String playerName;
+			if(nameField.getText().equals("")) 
+				playerName = "Maestro";
+			//TODO change this
+						
+			else {
+				playerName = nameField.getText();
+			}
+			this.gameView.setPlayerName(playerName);
+			System.out.println(gameView.getPlayerName());
+			this.gameView.setPane(gameView.getChooseCitypane());
+			
+			
+		});
 		
 		
 		
@@ -51,22 +65,6 @@ public class PlayerNamePane extends BorderPane implements EventHandler<ActionEve
 		
 	}
 
-	@Override
-	public void handle(ActionEvent arg0) {
-		String playerName;
-		if(nameField.getText().equals("")) 
-			playerName = "Maestro";
-		//TODO change this
-					
-		else {
-			playerName = nameField.getText();
-		}
-		this.gameView.setPlayerName(playerName);
-		System.out.println(gameView.getPlayerName());
-		this.gameView.setPane(gameView.getChooseCitypane());
-		
-		
-		
-	}
+	
 
 }

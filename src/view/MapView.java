@@ -213,11 +213,11 @@ public class MapView extends Pane {
 		for(MapViewListener l : listeners)
 			l.onMapViewOpen();
 	}
-	public void notifyListenersCityClicked(String cityName, Button...buttons) {
+	public void notifyListenersCityClicked(String cityName, CustomButton...buttons) {
 		for(MapViewListener l : listeners)
 			l.onCityClicked(cityName, buttons);
 	}
-	public void notifyListenersArmyClicked(Army a, Button... buttons) {
+	public void notifyListenersArmyClicked(Army a, CustomButton... buttons) {
 		for(MapViewListener l : listeners)
 			l.onArmyClicked(a, buttons);
 	}
@@ -236,7 +236,7 @@ public class MapView extends Pane {
 		System.out.println();
 		unitsData.setText(data);	
 		unitsData.setMinHeight(500);
-		parent.getChildren().add(new MessagePane(parent, "Army Units", 700, 700, null,unitsData ));
+		parent.getChildren().add(new MessagePane(gameView,parent, "Army Units", 700, 700, null,unitsData ));
 	}
 	public void onTargetBtnClicked(Army army) {
 		gameView.handleTargetClicked(army);

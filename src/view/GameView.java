@@ -73,7 +73,7 @@ public class GameView extends Stage implements ControllerListener {
 	public void handleInitArmy(City city, Unit unit) {
 		if (this.player.getControlledArmies().size() == 5) {
 			gamePane.getMainPane().getChildren()
-					.add(new AlertPane(gamePane.getMainPane(), 500, 400, "Cannot Initiate more armies"));
+					.add(new AlertPane(gamePane.getMainPane(), 600, 400, "Cannot Initiate more armies"));
 			return;
 		}
 		this.listener.onInitArmy(city, unit);
@@ -108,11 +108,11 @@ public class GameView extends Stage implements ControllerListener {
 			cityChoices.setValue(cityChoices.getItems().get(0));
 			msgContent = cityChoices;
 		}
-		Button targetFromMsg = new Button("Target");
-		MessagePane chooseTargetCity = new MessagePane(gamePane.getMainPane(), "Choose Target City", 500, 400,
+		CustomButton targetFromMsg = new CustomButton("Target",'m');
+		MessagePane chooseTargetCity = new MessagePane(this,gamePane.getMainPane(), "Choose Target City", 500, 400,
 				targetFromMsg, msgContent);
 		gamePane.getMainPane().getChildren().add(chooseTargetCity);
-		targetFromMsg.setOnAction(e -> {
+		targetFromMsg.setOnMouseClicked(e -> {
 			String targetCity = cityChoices.getValue();
 			gamePane.getMainPane().getChildren().remove(chooseTargetCity);
 			gamePane.getActionBox().getDetailsBox().setArmy(army);
@@ -154,7 +154,7 @@ public class GameView extends Stage implements ControllerListener {
 				updateCityViewState(city.getName() + " is underseige");
 			} catch (TargetNotReachedException | FriendlyCityException e1) {
 				gamePane.getMainPane().getChildren()
-						.add(new AlertPane(gamePane.getMainPane(), 500, 600, e1.getMessage()));
+						.add(new AlertPane(gamePane.getMainPane(), 600, 400, e1.getMessage()));
 			} finally {
 				gamePane.setMapView(gamePane.getMapView());
 			}
@@ -202,6 +202,7 @@ public class GameView extends Stage implements ControllerListener {
 		gamePane.onExitMap();
 		
 	}
+	
 
 	@Override
 	public void startGame() {

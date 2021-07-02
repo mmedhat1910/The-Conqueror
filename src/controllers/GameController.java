@@ -26,6 +26,7 @@ import units.Status;
 import units.Unit;
 import view.ActionAlert;
 import view.AlertPane;
+import view.CustomButton;
 import view.GameView;
 import view.GameViewListener;
 import view.MapViewListener;
@@ -185,13 +186,13 @@ public class GameController extends Application implements GameViewListener{
 		ChoiceBox<String> namesDropdown = new ChoiceBox<String>(FXCollections.observableArrayList(randomNames));
 		namesDropdown.setValue("Choose Name");
 		Pane parent = view.getGamePane().getMainPane();
-		Button chooseBtn = new Button("Initiate");
+		CustomButton chooseBtn = new CustomButton("Initiate",'m');
 		VBox vbox = new VBox();
 		vbox.getChildren().addAll(armyNameField,namesDropdown);
-		MessagePane chooseNameMsg = new MessagePane(parent, "Choose Army Name", 500, 400, chooseBtn, vbox);
+		MessagePane chooseNameMsg = new MessagePane(view,parent, "Choose Army Name", 500, 400, chooseBtn, vbox);
 		armyNameField.setOnAction(e-> chooseBtn.setDisable(false));
 		namesDropdown.setOnAction(e->chooseBtn.setDisable(false));
-		chooseBtn.setOnAction(e-> {
+		chooseBtn.setOnMouseClicked(e-> {
 			Army created = model.getPlayer().initiateArmy(city, unit);
 			String name="";
 			if(!armyNameField.getText().equals("")) {

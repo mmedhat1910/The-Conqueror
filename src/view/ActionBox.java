@@ -37,13 +37,15 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 		this.detailsBox = new DetailsBox(gameView);
 		this.detailsBox.setMinWidth(gameView.getWidth() * 0.35);
 		this.detailsBox.setMaxWidth(gameView.getWidth() * 0.35);
-
+		
 		this.actionButtons = new VBox();
 		this.actionButtons.setMinWidth(gameView.getWidth() * 0.20);
 		this.actionButtons.setMaxWidth(gameView.getWidth() * 0.20);
-		
+		this.actionButtons.setAlignment(Pos.CENTER);
+		this.actionButtons.setSpacing(10);
 		this.statusBox = new TextArea();
 		this.statusBox.setEditable(false);
+		this.statusBox.setWrapText(true);
 		this.statusBox.setMinWidth(gameView.getWidth() * 0.35);
 		this.statusBox.setMaxWidth(gameView.getWidth() * 0.35);
 		this.statusBox.setMaxHeight(gameView.getHeight()*0.2);
@@ -60,18 +62,17 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 	}
 
 	@Override
-	public void onBuildingClicked(Building building, Button... buttons) {
+	public void onBuildingClicked(Building building, CustomButton... buttons) {
 		this.actionButtons.getChildren().clear();
 		this.actionButtons.getChildren().addAll(buttons);
 		this.detailsBox.setBuilding(building);
 
 	}
-	public void onUnitClicked(Unit u, Button... buttons) {
+	public void onUnitClicked(Unit u, CustomButton... buttons) {
 		this.detailsBox.setUnit(u);
 		this.actionButtons.getChildren().clear();
-		gameView.getGamePane().getInitArmyBtn()
-				.setOnAction(e -> gameView.handleInitArmy(gameView.getGamePane().getCurrentCity(), u));
-		gameView.getGamePane().getRelocateBtn().setOnAction(e -> onRelocateBtnClicked(u));
+		gameView.getGamePane().getInitArmyBtn().setOnMouseClicked(e -> gameView.handleInitArmy(gameView.getGamePane().getCurrentCity(), u));
+		gameView.getGamePane().getRelocateBtn().setOnMouseClicked(e -> onRelocateBtnClicked(u));
 		if (gameView.getGamePane().getCurrentCity().getDefendingArmy().getUnits().contains(u))
 			this.actionButtons.getChildren().add(buttons[1]);
 		this.actionButtons.getChildren().addAll(buttons[0]);
@@ -88,7 +89,7 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 			armyNames.getItems().add("Defending Army");
 		
 		
-		Button relocateFromMessage = new Button("Relocate");
+		CustomButton relocateFromMessage = new CustomButton("Relocate",'m');
 		armyNames.setOnAction(e -> relocateFromMessage.setDisable(false));
 		Node messageContent = armyNames;
 		if (armyNames.getItems().size() == 0) {
@@ -98,9 +99,9 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 			armyNames.setValue(armyNames.getItems().get(0));
 			relocateFromMessage.setDisable(false);
 		}
-		MessagePane messagePane = new MessagePane(gameView.getGamePane().getMainPane(), "Choose Army", 600, 500,
+		MessagePane messagePane = new MessagePane(gameView,gameView.getGamePane().getMainPane(), "Choose Army", 600, 500,
 				relocateFromMessage, messageContent);
-		relocateFromMessage.setOnAction(e1 -> {
+		relocateFromMessage.setOnMouseClicked(e1 -> {
 			try {
 				Army army;
 				if(armyNames.getValue().equals("Defending Army")) {
@@ -121,6 +122,13 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 		gameView.getGamePane().getMainPane().getChildren().add(messagePane);
 	}
 	
+	public void toggleEnableBtns() {
+		for(Node node: this.actionButtons.getChildren()) {
+			if(node instanceof CustomButton)
+				((CustomButton)node).setDisable(!((CustomButton)node).isDisable());
+		}
+	}
+	
 	public City getCityByName(String cityName) {
 		for(City c: gameView.getAvailableCities())
 			if(c.getName().equals(cityName))
@@ -136,7 +144,7 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 		return null;
 	}
 
-	public void onArmyClicked(Army a, Button... buttons) {
+	public void onArmyClicked(Army a, CustomButton... buttons) {
 		this.detailsBox.setArmy(a);
 		this.actionButtons.getChildren().clear();
 		Button battleBtn = new Button("Enter Battle");
@@ -156,7 +164,7 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 	}
 
 	@Override
-	public void onCityClicked(String cityName, Button... buttons) {
+	public void onCityClicked(String cityName, CustomButton... buttons) {
 		
 
 	}
@@ -240,5 +248,6 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 	public void setStatusBox(TextArea statusBox) {
 		this.statusBox = statusBox;
 	}
+
 
 }

@@ -3,6 +3,7 @@ package view;
 import engine.City;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -16,6 +17,7 @@ public class InfoBar extends BorderPane{
 	private Label cityLabel;
 	private Label goldLabel;
 	private Label turnLabel;
+	private CustomButton endTurnBtn;
 	
 	
 	public InfoBar(GameView gameView) {
@@ -53,18 +55,23 @@ public class InfoBar extends BorderPane{
 		
 		HBox turnDataBox = new HBox();
 		turnDataBox.getChildren().add(turnLabel);
-		Button endTurnBtn = new Button("End Turn");
-		endTurnBtn.setOnAction(e->gameView.getListener().onEndTurn());
+		endTurnBtn = new CustomButton("End Turn",'s');
+		endTurnBtn.setOnMouseClicked(e->gameView.getListener().onEndTurn());
 		turnDataBox.getChildren().add(endTurnBtn);
 		
 		Button exitBtn = new Button("Exit");
 		exitBtn.setOnAction(e->gameView.close());
 		turnDataBox.getChildren().add(exitBtn);
+		//TODO add menu here
 		
 		turnDataBox.setAlignment(Pos.CENTER);
 		this.setRight(turnDataBox);
 	}
 
+	public void toggleEnableBtns() {
+		endTurnBtn.setDisable(!endTurnBtn.isDisable());
+	}
+	
 	public void update() {
 		foodLabel.setText(String.format("%.1f", this.gameView.getFood()));
 		goldLabel.setText(String.format("%.1f",this.gameView.getTreasury()));

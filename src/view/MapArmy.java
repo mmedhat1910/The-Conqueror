@@ -29,10 +29,10 @@ public class MapArmy extends VBox{
 		if(title != null)
 			this.getChildren().add(label);
 		this.getChildren().add( imageContainer);
-		Button targetBtn = new Button("Target");
-		Button unitsDetails = new Button("Check units info");
-		targetBtn.setOnAction(e-> parent.onTargetBtnClicked(army));
-		unitsDetails.setOnAction(e->parent.showUnitsInfo(army));
+		CustomButton targetBtn = new CustomButton("Target",'l');
+		CustomButton unitsDetails = new CustomButton("Check info",'l');
+		targetBtn.setOnMouseClicked(e-> parent.onTargetBtnClicked(army));
+		unitsDetails.setOnMouseClicked(e->parent.showUnitsInfo(army));
 //		targetBtn
 		this.setOnMouseClicked(e-> parent.notifyListenersArmyClicked(army, unitsDetails,targetBtn));
 		String[] s = army.getArmyName().split(" ");

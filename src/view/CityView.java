@@ -101,8 +101,8 @@ public class CityView extends GridPane {
 			ImageView icon = new ImageView("file:resources/images/army/army-icon.png");
 			icon.setFitWidth(100);
 			icon.setPreserveRatio(true);
-			Button targetBtn = new Button("Target");
-			targetBtn.setOnAction(e->gameView.handleTargetClicked(army));
+			CustomButton targetBtn = new CustomButton("Target",'l');
+			targetBtn.setOnMouseClicked(e->gameView.handleTargetClicked(army));
 			
 			icon.setOnMouseClicked(e->gameView.getGamePane().getActionBox().onArmyClicked(army, targetBtn));
 			pane.getChildren().add(icon);

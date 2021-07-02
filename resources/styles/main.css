@@ -8,7 +8,19 @@
     -fx-font-family: "Times New Roman";
 
 }
+.custom-btn-lg > .label{
+	-fx-font-size:1.3em;
+	-fx-font-weight: bold;
+}
 
+.custom-btn-md > .label {
+	-fx-font-size: 1.0em;
+	-fx-font-weight: bold;
+}
+.custom-btn-sm > .label {
+	-fx-font-size: 0.9em;
+	-fx-font-weight: bold;
+}
 .get-name-panel {
 	-fx-background-image: url('file:resources/images/backgrounds/bg2.jpeg');
 	-fx-background-repeat: no-repeat;
@@ -83,21 +95,58 @@
 	-fx-background-position: center center;
 }
 .message-pane{
-	-fx-background-color: #aeaeae;
+	-fx-padding: 50px 100px;
+	-fx-background-color: transparent;
+	-fx-word-wrap: wrap;
+	-fx-background-image: url('file:resources/images/backgrounds/alerts-bg.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: 100% 100%;
+	-fx-background-position: center center;
+	-fx-text-fill :rgb(96, 62, 27);
+	-fx-text-alignment: center;
 }
+
+.message-pane > .title-box > .label{
+	-fx-text-fill: rgb(96, 62, 27);
+	-fx-font-weight: bold;
+}
+
+.city-label{
+	-fx-text-fill: rgb(96, 62, 27);
+}
+
 .build-dropdown{
 	
-  -fx-background-color: black;
-  -fx-mark-color: orange; 
+  	-fx-background-color: rgb(96, 62, 27);
+  	-fx-mark-color: orange; 
+	-fx-backgroundcolor: rgb(96, 62, 27);
+   	-fx-focus-color: rgb(147, 104, 72);
+   	-fx-faint-focus-color: #ADD8E6;
+   	-fx-control-inner-background: rgb(96, 62, 27);
+   	-fx-selection-bar: rgb(147, 104, 72);
 }
-build-dropdown > .label { -fx-text-fill: white; }
+.build-dropdown > .label { -fx-text-fill: white; }
+.build-dropdown > .item{
+	-fx-text-fill: red;
+}
 
 .alert {
-	-fx-background-color: white;
+	-fx-padding: 50px 100px;
+	-fx-background-color: transparent;
 	-fx-word-wrap: wrap;
+	-fx-background-image: url('file:resources/images/backgrounds/alerts-bg.png');
+	-fx-background-repeat: no-repeat;
+	-fx-background-size: 100% 100%;
+	-fx-background-position: center center;
+	-fx-text-fill :rgb(96, 62, 27);
+	-fx-text-alignment: center;
 	
 }
-.alert > .label { -fx-text-fill: black; }
+.alert > .label { -fx-text-fill :rgb(96, 62, 27); }
+.alert > .text-area {
+	 -fx-text-fill :rgb(96, 62, 27);
+	-fx-text-alignment: center; 
+}
 
 .button {
 	-fx-font-size: 20px ;
@@ -157,3 +206,8 @@ build-dropdown > .label { -fx-text-fill: white; }
 .text-area .scroll-pane .content{
     -fx-background-color: transparent;
 }
+
+/* Attributions
+Message images : <a href='https://pngtree.com/so/projection'>projection png from pngtree.com</a>
+
+*/
