@@ -25,8 +25,8 @@ public class MapCity extends ImageView{
 		this.setPreserveRatio(true);
 		this.relocate(xCoordinate, yCoordinate);
 		
-		Button visitBtn =  new Button("Visit City");
-		visitBtn.setOnAction(e->{
+		CustomButton visitBtn =  new CustomButton("Visit City",'l');
+		visitBtn.setOnMouseClicked(e->{
 			parent.onVisitClicked(cityName);
 		});
 		

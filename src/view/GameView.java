@@ -131,8 +131,8 @@ public class GameView extends Stage implements ControllerListener {
 
 	public void onReachingTarget(Army army) {
 		City city = getCityByName(army.getCurrentLocation());
-		Button laySeigeBtn = new Button("Lay Seige");
-		Button battleBtn = new Button("Start Battle");
+		CustomButton laySeigeBtn = new CustomButton("Lay Seige",'m');
+		CustomButton battleBtn = new CustomButton("Start Battle",'m');
 		String status = army.getArmyName() + " reached " + army.getCurrentLocation();
 		ActionAlert laySeigeMessage = new ActionAlert(gamePane.getMainPane(), "Action Needed", 600, 400, status,	laySeigeBtn, battleBtn);
 		gamePane.getActionBox().addStatus(status);
@@ -145,9 +145,9 @@ public class GameView extends Stage implements ControllerListener {
 			return;
 		}
 		city.setInBattle(true);
-		laySeigeBtn.setOnAction(e -> System.out.println("Laysiege clicked"));
-		battleBtn.setOnAction(e -> System.out.println("Enter Battle"));
-		laySeigeBtn.setOnAction(e -> {
+		laySeigeBtn.setOnMouseClicked(e -> System.out.println("Laysiege clicked"));
+		battleBtn.setOnMouseClicked(e -> System.out.println("Enter Battle"));
+		laySeigeBtn.setOnMouseClicked(e -> {
 			try {
 				this.listener.handleLaySeige(army, city);
 				gamePane.getMainPane().getChildren().remove(laySeigeMessage);
@@ -159,7 +159,7 @@ public class GameView extends Stage implements ControllerListener {
 				gamePane.setMapView(gamePane.getMapView());
 			}
 		});
-		battleBtn.setOnAction(e -> {
+		battleBtn.setOnMouseClicked(e -> {
 			gamePane.getMainPane().getChildren().remove(laySeigeMessage);
 			this.enterBattle(army, city);
 		});

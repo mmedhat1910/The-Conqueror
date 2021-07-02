@@ -50,6 +50,16 @@
 	-fx-border-radius: 5px;
 	-fx-font-size: 20px;
 }
+.army-name-field{
+	-fx-prompt-text-fill: white;
+	-fx-text-fill: white;
+	-fx-background-color: rgba(96, 62, 27,0.6);
+	-fx-border-size: 2px;
+	-fx-border-color: white;
+	-fx-border-radius: 5px;
+	
+
+}
 
 .cities-map {
 	-fx-background-image: url('file:resources/images/map/map-bg.png');
@@ -115,7 +125,7 @@
 	-fx-text-fill: rgb(96, 62, 27);
 }
 
-.build-dropdown{
+.choice-box{
 	
   	-fx-background-color: rgb(96, 62, 27);
   	-fx-mark-color: orange; 
@@ -184,14 +194,16 @@
 	-fx-background-repeat: no-repeat;
 	-fx-background-size: 100% 100%;
 	-fx-background-position: center center;
-	-fx-padding:10px 0 0 45px;
+	-fx-padding:20px 20px 0 45px;
 	
 }
 
 
 
+
 .text-area {
     -fx-background-color: rgba(53,89,119,0.0);
+	-fx-text-fill:  rgb(96, 62, 27);
 }
 
 .text-area .scroll-pane {

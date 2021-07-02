@@ -48,15 +48,19 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 		this.statusBox.setWrapText(true);
 		this.statusBox.setMinWidth(gameView.getWidth() * 0.35);
 		this.statusBox.setMaxWidth(gameView.getWidth() * 0.35);
+		
 		this.statusBox.setMaxHeight(gameView.getHeight()*0.2);
 		this.statusBox.setText(
 				"Hello " + gameView.getPlayerName() + "\n*Tip: Start by building a market to avoid being broke");
-		
+		this.stickyButtons.setMinWidth(gameView.getWidth()*0.09);
+		this.stickyButtons.setMaxWidth(gameView.getWidth()*0.09);
+		stickyButtons.setAlignment(Pos.CENTER);
+		statusBox.setPickOnBounds(true);
 		this.getChildren().add(detailsBox);
 		this.getChildren().add(actionButtons);
 		this.getChildren().add(statusBox);
 		this.getChildren().add(stickyButtons);
-
+		
 		this.setAlignment(Pos.CENTER_LEFT);
 
 	}

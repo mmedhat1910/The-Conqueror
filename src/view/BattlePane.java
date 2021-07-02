@@ -161,7 +161,7 @@ public class BattlePane extends BorderPane{
 	
 	public boolean checkIfBattleEnded() {
 		String msg= ""; boolean ended = false;
-		Button exitBattle = new Button("Exit");
+		CustomButton exitBattle = new CustomButton("Exit Battle",'m');
 		if(attackingArmy.getUnits().size() == 0) {
 			msg = "You lost";
 			ended = true;
@@ -171,7 +171,7 @@ public class BattlePane extends BorderPane{
 			ended = true;
 		}
 		
-		exitBattle.setOnAction(e->{
+		exitBattle.setOnMouseClicked(e->{
 			gameView.setPane(gameView.getGamePane());
 			gameView.getGamePane().getMapView().updateMap();
 		});

@@ -13,6 +13,7 @@ import exceptions.MaxSeigingPeriodException;
 import exceptions.TargetNotReachedException;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -20,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import units.Army;
 import units.Status;
@@ -101,8 +103,8 @@ public class GameController extends Application implements GameViewListener{
 
 		if(model.isGameOver()) {
 			String msg ="";
-			Button endGameBtn = new Button("End Game");
-			endGameBtn.setOnAction(e-> {
+			CustomButton endGameBtn = new CustomButton("End Game",'m');
+			endGameBtn.setOnMouseClicked(e-> {
 				view.close();
 				System.exit(0);
 			});
@@ -121,10 +123,10 @@ public class GameController extends Application implements GameViewListener{
 				view.getGamePane().getMapView().updateMap();
 				view.getGamePane().getActionBox().getDetailsBox().update();
 			} catch (MaxSeigingPeriodException e) {
-				Button okBtn = new Button("Ok");
+				CustomButton okBtn = new CustomButton("Ok",'m');
 				ActionAlert maxSiegingAlert = new ActionAlert(view.getGamePane().getMainPane(), "Battle Action", 600,400,"You are going to be prompt to the battle view to finalize the active seiging",okBtn);
 				view.getGamePane().getMainPane().getChildren().add(maxSiegingAlert);
-				okBtn.setOnAction(e1->{
+				okBtn.setOnMouseClicked(e1->{
 					view.getGamePane().getMainPane().getChildren().remove(maxSiegingAlert);
 					Army attacking=null; City city=null;
 					for(Army a: model.getPlayer().getControlledArmies())
@@ -182,14 +184,19 @@ public class GameController extends Application implements GameViewListener{
 	@Override
 	public void onInitArmy(City city,Unit unit) {
 		TextField armyNameField = new TextField();
+		armyNameField.getStyleClass().add("army-name-field");
 		armyNameField.setPromptText("Choose army name");
 		ChoiceBox<String> namesDropdown = new ChoiceBox<String>(FXCollections.observableArrayList(randomNames));
 		namesDropdown.setValue("Choose Name");
 		Pane parent = view.getGamePane().getMainPane();
 		CustomButton chooseBtn = new CustomButton("Initiate",'m');
 		VBox vbox = new VBox();
-		vbox.getChildren().addAll(armyNameField,namesDropdown);
-		MessagePane chooseNameMsg = new MessagePane(view,parent, "Choose Army Name", 500, 400, chooseBtn, vbox);
+		Label or  = new Label("or");
+		or.setFont(Font.font(8));
+		or.setStyle("-fx-text-fill: rgb(96, 62, 27)");
+		vbox.getChildren().addAll(armyNameField,or,namesDropdown);
+		vbox.setAlignment(Pos.CENTER);
+		MessagePane chooseNameMsg = new MessagePane(view,parent, "Choose Army Name", 700, 500, chooseBtn, vbox);
 		armyNameField.setOnAction(e-> chooseBtn.setDisable(false));
 		namesDropdown.setOnAction(e->chooseBtn.setDisable(false));
 		chooseBtn.setOnMouseClicked(e-> {

@@ -29,15 +29,16 @@ public class MessagePane extends BorderPane{
 		this.parent = pane;
 		this.getStyleClass().add("message-pane");
 		this.titleBox = new HBox();
-		this.width = width;
-		this.height = height;
+		this.width = Math.max(this.gameView.getWidth()*0.5,width);
+		this.height = Math.max(this.gameView.getHeight()*0.5, height);
 		this.content = new VBox();
 		this.buttonsBar = new HBox();
 		Label l = new Label(title);
 		this.titleBox.getStyleClass().add("title-box");
 		this.titleBox.getChildren().add(l);
 		this.content.getChildren().addAll(content);
-		
+		this.content.setAlignment(Pos.CENTER);
+		this.content.setSpacing(20);
 		CustomButton cancel = new CustomButton("Cancel",'m');
 		cancel.setOnMouseClicked(e->{
 			parent.getChildren().remove(this); 

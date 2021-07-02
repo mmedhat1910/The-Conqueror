@@ -28,6 +28,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import units.Archer;
 import units.Army;
 import units.Infantry;
@@ -42,7 +43,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 	private CityView cityView;
 	private City currentCity;
 	private ArrayList<String> buildingsToBuild;
-	private Button mapBtn;
+	private CustomButton mapBtn;
 	private MapView mapView;
 	
 	private VBox stickyButtons;
@@ -70,7 +71,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		
 		this.setMaxWidth(this.gameView.getWidth());
 		this.infoBar = new InfoBar(gameView);
-		this.mapBtn = new Button("Map");
+		this.mapBtn = new CustomButton("Map",'s');
 		mapBtn.getStyleClass().add("map-btn");
 //		for(BuildingBlock b : this.cityView.getBlocks())
 //			b.setListener(actionBox, this);
@@ -81,7 +82,8 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		buildingsToBuild.add("ArcheryRange");
 		buildingsToBuild.add("Barracks");
 		buildingsToBuild.add("Stable");
-		mapBtn.setOnAction(e->{
+		mapBtn.setMaxWidth(gameView.getWidth()*0.08);
+		mapBtn.setOnMouseClicked(e->{
 			if(this.mainPane.getChildren().contains(mapView))
 				this.mainPane.getChildren().remove(mapView);
 			this.mainPane.getChildren().add(mapView);
@@ -141,23 +143,39 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 			buildBtn.setDisable(true);
 
 		VBox msgContent = new VBox();
-		msgContent.getChildren().add(choiceBox);
+		Label buildingCost = new Label("Building cost: 1500");
+		msgContent.setAlignment(Pos.CENTER);
+		buildingCost.setStyle("-fx-text-fill: rgb(96, 62, 27)");
+		MessagePane dialog = new MessagePane(gameView,this.mainPane,"Build", 600, 400, buildBtn , buildingCost, choiceBox);
 		choiceBox.setOnAction(e->{
 			block.setBuildingType(choiceBox.getValue());
+			switch(choiceBox.getValue()) {
+			case "Farm" : buildingCost.setText("Building cost: 1000"); break;
+			case "Market": buildingCost.setText("Building cost: 1500"); break;
+			case "ArcheryRange" : buildingCost.setText("Building cost: 1500"); break;
+			case "Barracks" : buildingCost.setText("Building cost: 2000"); break;
+			case "Stable" : buildingCost.setText("Building cost: 2500"); break;
+			default :  buildingCost.setText("N/A");
+			}
 			buildBtn.setDisable(false);
 			if(msgContent.getChildren().size()>1)
 				msgContent.getChildren().remove(msgContent.getChildren().size()-1);
+			
+			dialog.getContent().getChildren().clear();
+			dialog.getContent().getChildren().addAll(buildingCost, choiceBox);
 		});
 		choiceBox.setValue(buildingsToBuild.get(0));
 		choiceBox.getStyleClass().add("build-dropdown");
-		MessagePane dialog = new MessagePane(gameView,this.mainPane,"Build", this.gameView.getWidth()*0.4, this.gameView.getHeight()*0.4, buildBtn , msgContent);
 		
 		buildBtn.setOnMouseClicked(e->{
 			try {
 				Building b = block.startBuild();
 				block.notifyListenersOnBuild();
+				Label error = new Label("Building Already exists");
+				error.setFont(Font.font(10));
+				error.setStyle("-fx-text-fill: rgb(200, 53, 48)");
 				if(b == null)
-					msgContent.getChildren().add(new Label("Building Already exists"));
+					dialog.getContent().getChildren().add(error);
 				else
 					this.mainPane.getChildren().remove(dialog);
 			
@@ -174,7 +192,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 
 	}
 
-
+	
 
 	@Override
 	public void onUpgrade(BuildingBlock block) {
@@ -321,13 +339,13 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 
 
 
-	public Button getMapBtn() {
+	public CustomButton getMapBtn() {
 		return mapBtn;
 	}
 
 
 
-	public void setMapBtn(Button mapBtn) {
+	public void setMapBtn(CustomButton mapBtn) {
 		this.mapBtn = mapBtn;
 	}
 

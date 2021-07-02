@@ -23,16 +23,19 @@ public class ActionAlert extends BorderPane{
 	private TextArea content;
 	
 	
-	public ActionAlert(Pane pane,String title,double width, double height , String msg,Button... btns) {
+	public ActionAlert(Pane pane,String title,double width, double height , String msg,CustomButton... btns) {
 		this.parent = pane;
 		this.getStyleClass().add("message-pane");
 		this.titleBox = new HBox();
-		this.width = width;
-		this.height = height;
+		this.width = Math.max(width, 700);
+		this.height = Math.max( height, 500);
 		
 		this.buttonsBar = new HBox();
-		this.titleBox.getChildren().add(new Label(title));
-		
+		Label titleLabel = new Label(title);
+		titleLabel.setStyle("-fx-text-fill: rgb(96, 62, 27)");
+		this.titleBox.getChildren().add(titleLabel);
+		buttonsBar.setSpacing(10);
+//		setAlignment(buttonsBar, Pos.CENTER);
 		this.buttonsBar.getChildren().addAll(btns);
 		this.content = new TextArea(msg +"\n Should you choose to:");
 		this.content.setEditable(false);
@@ -44,7 +47,7 @@ public class ActionAlert extends BorderPane{
 		
 		this.setMaxHeight(height);
 		this.setMaxWidth(width);
-		this.buttonsBar.setAlignment(Pos.CENTER_RIGHT);
+		this.buttonsBar.setAlignment(Pos.BOTTOM_CENTER);
 		this.titleBox.setAlignment(Pos.CENTER);
 		
 		

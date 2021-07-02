@@ -18,7 +18,7 @@ public class PlayerNamePane extends BorderPane {
 	private Image logo;
 	private ImageView logoView;
 	private TextField nameField;
-	private CustomButton nextbtn;
+	private CustomButton startbtn;
 	private GameView gameView;
 	
 	public PlayerNamePane(GameView gameView) {
@@ -34,10 +34,10 @@ public class PlayerNamePane extends BorderPane {
 		this.nameField.setMaxWidth(0.3*gameView.getStageWidth());
 		this.nameField.getStyleClass().add("name-field");
 		
-		this.nextbtn = new CustomButton("Next",'l');
-		this.nextbtn.getStyleClass().add("start-btn");
-		this.nextbtn.setPrefSize(150, 50);
-		this.nextbtn.setOnMouseClicked(e->{
+		this.startbtn = new CustomButton("Start Game",'l');
+		this.startbtn.getStyleClass().add("start-btn");
+		this.startbtn.setPrefSize(150, 50);
+		this.startbtn.setOnMouseClicked(e->{
 			String playerName;
 			if(nameField.getText().equals("")) 
 				playerName = "Maestro";
@@ -53,12 +53,19 @@ public class PlayerNamePane extends BorderPane {
 			
 		});
 		
+		CustomButton exit = new CustomButton("Exit Game", 'l');
+		exit.setOnMouseClicked(e->{
+			gameView.close();
+			System.exit(0);
+		});
+		
 		
 		
 		VBox vbox = new VBox();
 		vbox.getChildren().add(logoView);
 		vbox.getChildren().add(nameField);
-		vbox.getChildren().add(nextbtn);
+		vbox.getChildren().add(startbtn);
+		vbox.getChildren().add(exit);
 		vbox.setAlignment(Pos.CENTER);
 		vbox.setSpacing(30);
 		this.setCenter(vbox);
