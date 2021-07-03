@@ -38,6 +38,7 @@ public class PlayerNamePane extends BorderPane {
 		this.startbtn.getStyleClass().add("start-btn");
 		this.startbtn.setPrefSize(150, 50);
 		this.startbtn.setOnMouseClicked(e->{
+			gameView.playClick();
 			String playerName;
 			if(nameField.getText().equals("")) 
 				playerName = "Maestro";
@@ -55,6 +56,7 @@ public class PlayerNamePane extends BorderPane {
 		
 		CustomButton exit = new CustomButton("Exit Game", 'l');
 		exit.setOnMouseClicked(e->{
+			gameView.playClick();
 			gameView.close();
 			System.exit(0);
 		});

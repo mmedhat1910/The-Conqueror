@@ -17,14 +17,14 @@ import units.Unit;
 
 public class MapView extends Pane {
 	private ArrayList<MapViewListener> listeners;
-	private GameView gameView;
+	public GameView gameView;
 	private double width;
 	private double height;
 	private MapCity rome;
 	private MapCity sparta;
 	private MapCity cairo;
 	private Pane parent;
-	private Button closeMap ;
+	private CustomButton closeMap ;
 //	private MapArmy mapArmy;
 	private ArrayList<MapArmy> mapArmies; 
 	public MapView(GameView gameView, Pane parent) {
@@ -40,8 +40,9 @@ public class MapView extends Pane {
 		this.setMaxHeight(height);
 		this.mapArmies = new ArrayList<>();
 //		this.mapArmy= new MapArmy(this, new Army("", "123"), null, 50);
-		closeMap= new Button("Close");
-		closeMap.setOnAction(e->{
+		closeMap= new CustomButton("Close",'s');
+		closeMap.setOnMouseClicked(e->{
+			gameView.playClick();
 			parent.getChildren().remove(this);
 			gameView.getGamePane().onExitMap();
 		});
@@ -218,6 +219,7 @@ public class MapView extends Pane {
 			l.onCityClicked(cityName, buttons);
 	}
 	public void notifyListenersArmyClicked(Army a, CustomButton... buttons) {
+		gameView.playClick();
 		for(MapViewListener l : listeners)
 			l.onArmyClicked(a, buttons);
 	}

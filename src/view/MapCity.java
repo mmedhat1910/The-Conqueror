@@ -27,11 +27,13 @@ public class MapCity extends ImageView{
 		
 		CustomButton visitBtn =  new CustomButton("Visit City",'l');
 		visitBtn.setOnMouseClicked(e->{
+			gameView.playClick();
 			parent.onVisitClicked(cityName);
 		});
 		
 
 		this.setOnMouseClicked(e->{
+			gameView.playClick();
 			ActionBox action = this.gameView.getGamePane().getActionBox();
 			action.getActionButtons().getChildren().clear();
 			City c = getCityByName(this.cityName);

@@ -49,6 +49,7 @@ public class ChooseCityPane extends BorderPane {
 			ImageView cityImg = new ImageView("file:resources/images/cities/"+cities[i].toLowerCase()+".png");
 			Label label = new Label(cities[i]);
 			cityBox.setOnMouseClicked(e->{
+				gameView.playClick();
 				this.gameView.setPlayerCity(label.getText());
 				this.gameView.getListener().onStartGame();
 			});

@@ -105,10 +105,17 @@ public class GameController extends Application implements GameViewListener{
 			String msg ="";
 			CustomButton endGameBtn = new CustomButton("End Game",'m');
 			endGameBtn.setOnMouseClicked(e-> {
+				view.playClick();
 				view.close();
 				System.exit(0);
 			});
-			msg = model.getCurrentTurnCount() == model.getMaxTurnCount()?  "You Lost" : "You Won";
+			if(model.getCurrentTurnCount() == model.getMaxTurnCount()) {
+				msg = "You Lost" ;
+				view.playLost();
+			}else {
+				view.playWon();
+				msg = "You Won";
+			}
 			System.out.println("GameOver "+msg);
 			ActionAlert gameOverAlert = new ActionAlert(view.getGamePane().getMainPane(), "Game Over", 500, 400, msg, endGameBtn);
 			view.getGamePane().getMainPane().getChildren().add(gameOverAlert);
@@ -127,6 +134,7 @@ public class GameController extends Application implements GameViewListener{
 				ActionAlert maxSiegingAlert = new ActionAlert(view.getGamePane().getMainPane(), "Battle Action", 600,400,"You are going to be prompt to the battle view to finalize the active seiging",okBtn);
 				view.getGamePane().getMainPane().getChildren().add(maxSiegingAlert);
 				okBtn.setOnMouseClicked(e1->{
+					view.playClick();
 					view.getGamePane().getMainPane().getChildren().remove(maxSiegingAlert);
 					Army attacking=null; City city=null;
 					for(Army a: model.getPlayer().getControlledArmies())
@@ -148,7 +156,7 @@ public class GameController extends Application implements GameViewListener{
 
 	public void handleOccupy(Army army, String cityName) {
 		String armyName = army.getArmyName();
-		view.getGamePane().getActionBox().addStatus(armyName + "occupied " +cityName);
+		view.getGamePane().getActionBox().addStatus(armyName + " occupied " +cityName);
 		model.occupy(army, cityName);
 		view.getGamePane().getActionBox().addStatus(armyName +" was renamed to "+ army.getArmyName());
 	}
@@ -200,6 +208,7 @@ public class GameController extends Application implements GameViewListener{
 		armyNameField.setOnAction(e-> chooseBtn.setDisable(false));
 		namesDropdown.setOnAction(e->chooseBtn.setDisable(false));
 		chooseBtn.setOnMouseClicked(e-> {
+			view.playClick();
 			Army created = model.getPlayer().initiateArmy(city, unit);
 			String name="";
 			if(!armyNameField.getText().equals("")) {

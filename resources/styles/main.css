@@ -183,6 +183,7 @@
 }
 .battle-view > .label{
 	-fx-text-fill:black;
+	
 }
 .action-box > .text-area{
 	-fx-text-fill :rgb(96, 62, 27);
@@ -199,6 +200,12 @@
 }
 
 
+.battle-title{
+	-fx-text-fill: #0f5e6e;
+	-fx-font-weight: bold;
+	-fx-font-size: 2em;
+	-fx-text-align: center;
+}
 
 
 .text-area {

@@ -18,8 +18,21 @@ public class MapArmy extends VBox{
 	public MapArmy(MapView parent,Army a, String title,double size) {
 		this.parentView = parent;
 		this.title = title;
-		this.imageContainer = new ImageView("file:resources/images/army/army-icon.png");
 		this.army = a;
+		
+		
+		CustomButton targetBtn = new CustomButton("Target",'l');
+		CustomButton unitsDetails = new CustomButton("Check info",'l');
+		targetBtn.setOnMouseClicked(e->{ parent.gameView.playClick(); parent.onTargetBtnClicked(army);});
+		unitsDetails.setOnMouseClicked(e->{ parent.gameView.playClick();   parent.showUnitsInfo(army);});
+		this.imageContainer = new ImageView("file:resources/images/army/icons/army.png");
+		String[] s = army.getArmyName().split(" ");
+		for(String str: s )
+			if(str.equals("defenders") || army.getCurrentStatus()!=Status.IDLE) {		
+				this.setOnMouseClicked(e-> parent.notifyListenersArmyClicked(army, unitsDetails));
+				imageContainer.setImage(new Image("file:resources/images/army/icons/defending.png"));
+			}else
+				this.setOnMouseClicked(e-> parent.notifyListenersArmyClicked(army, unitsDetails,targetBtn));
 //		imageContainer.setImage(new Image("file:resources/images/army/army-icon.png"));
 		imageContainer.setFitWidth(size);
 		imageContainer.setPreserveRatio(true);
@@ -29,16 +42,10 @@ public class MapArmy extends VBox{
 		if(title != null)
 			this.getChildren().add(label);
 		this.getChildren().add( imageContainer);
-		CustomButton targetBtn = new CustomButton("Target",'l');
-		CustomButton unitsDetails = new CustomButton("Check info",'l');
-		targetBtn.setOnMouseClicked(e-> parent.onTargetBtnClicked(army));
-		unitsDetails.setOnMouseClicked(e->parent.showUnitsInfo(army));
+		
 //		targetBtn
-		this.setOnMouseClicked(e-> parent.notifyListenersArmyClicked(army, unitsDetails,targetBtn));
-		String[] s = army.getArmyName().split(" ");
-		for(String str: s )
-			if(str.equals("defenders") || army.getCurrentStatus()!=Status.IDLE)				
-				this.setOnMouseClicked(e-> parent.notifyListenersArmyClicked(army, unitsDetails));
+		
+		
 		
 		
 	}

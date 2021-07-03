@@ -1,14 +1,20 @@
 package view;
 
+import java.util.ArrayList;
+
 import controllers.GameController;
 import javafx.animation.PauseTransition;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -22,14 +28,16 @@ public class BattlePane extends BorderPane{
 	private FlowPane attackingSide;
 	private FlowPane defendingSide;
 	private FlowPane actionButtons;
-	private Button attack;
+	private CustomButton attack;
 	private StackPane mainPane;
-	private Button autoResolve;
+	private CustomButton autoResolve;
 	private Button surrender;
 	private Unit attackingUnit;
 	private Unit defendingUnit;
 	private TextArea logArea;
-	private FlowPane actionArea;
+	private HBox actionArea;
+	private ArrayList<BattleUnit> attackerBattleUnits = new ArrayList<>();
+	private ArrayList<BattleUnit> defenderBattleUnits = new ArrayList<>();
 	public BattlePane(GameView gameView, Army attacking, Army defending) {
 		this.attackingArmy =  attacking;
 		this.defendingArmy =defending;
@@ -39,8 +47,8 @@ public class BattlePane extends BorderPane{
 		this.attackingSide.setOrientation(Orientation.VERTICAL);
 		this.defendingSide.setOrientation(Orientation.VERTICAL);
 		this.actionButtons = new FlowPane();
-		this.attack = new Button("Attack");
-		this.autoResolve =new Button("Auto Resolve Battle");
+		this.attack = new CustomButton("Attack",'l');
+		this.autoResolve =new CustomButton("Auto Resolve Battle",'l');
 		this.surrender = new Button("Surrender");
 		this.getStyleClass().add("battle-view");
 		this.gameView= gameView;
@@ -48,25 +56,52 @@ public class BattlePane extends BorderPane{
 		this.setMaxHeight(gameView.getHeight());
 		this.attackingSide.setMaxWidth(gameView.getWidth()*0.2);
 		this.attackingSide.setMinWidth(gameView.getWidth()*0.2);
+		
 		this.logArea = new TextArea();
 		logArea.setEditable(false);
-		this.actionArea = new FlowPane();
-		this.actionArea.getChildren().add(logArea);
-		this.actionArea.getChildren().add(attack);
-		this.actionArea.getChildren().add(autoResolve);
+		logArea.setStyle("-fx-background-color: rgba(0,0,0,0.4); "
+				+ "-fx-text-fill: white;"
+				+ "-fx-padding: 20 50;"
+				);
+		
+		
+		this.actionArea = new HBox();
+		actionArea.setAlignment(Pos.CENTER);
+		actionArea.setSpacing(10);
+		this.actionArea.getChildren().addAll(attack,autoResolve);
 //		this.actionButtons.getChildren().add(surrender);
 		
+		this.setPadding(new Insets(10,30,0,30));
 		
-		
-		attack.setOnAction(e-> handleAttack());
-		autoResolve.setOnAction(e->handleAutoresolve());
+		attack.setOnMouseClicked(e-> handleAttack());
+		autoResolve.setOnMouseClicked(e->handleAutoresolve());
 		if(checkIfBattleEnded()) {
 			gameView.getListener().handleOccupy(attackingArmy, defendingArmy.getCurrentLocation());
 		}
-		this.setBottom(actionArea);
+		
+		VBox bottomBox = new VBox();
+		bottomBox.setSpacing(10);
+		bottomBox.setAlignment(Pos.CENTER);
+		bottomBox.getChildren().addAll(actionArea, logArea);
+		bottomBox.setMinWidth(gameView.getWidth()*0.7);
+		this.setBottom(bottomBox);
+		
 		this.setCenter(mainPane);
 		showArmies();
-		this.setTop(new Label(attackingArmy.getArmyName()+" vs. "+defendingArmy.getArmyName()));
+		
+		Label titleLabel = new Label(attackingArmy.getArmyName()+" vs. "+defendingArmy.getArmyName());
+		titleLabel.getStyleClass().add("battle-title");
+		titleLabel.setStyle("-fx-text-fill: #0f5e6e;\n"
+				+ "	-fx-font-weight: bold;\n"
+				+ "	-fx-font-size: 3em;\n"
+				+ "	-fx-text-align: center;"
+				+ " -fx-padding: 20px ;"+
+				"-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0.5, 0.5, 0)");
+		
+		titleLabel.setAlignment(Pos.CENTER);
+		setAlignment(titleLabel, Pos.TOP_CENTER);
+		setAlignment(bottomBox, Pos.CENTER);
+		this.setTop(titleLabel);
 	}
 
 	public void addLog(String log) {
@@ -74,6 +109,7 @@ public class BattlePane extends BorderPane{
 		logArea.setText(log+"\n"+old);
 	}
 	private void handleAutoresolve() {
+		gameView.playClick();
 		addLog("You decided to autoresolve the battle");
 		gameView.onAutoResolve(attackingArmy, defendingArmy);
 		
@@ -81,16 +117,18 @@ public class BattlePane extends BorderPane{
 	}
 
 	private void handleAttack() {
-		
-		PauseTransition pause = new PauseTransition(Duration.seconds(1));
+		gameView.playClick();
+		PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
 		if(this.attackingUnit != null && this.defendingUnit != null) {
 			
 			int defCount = defendingUnit.getCurrentSoldierCount();
 			addLog("Your turn");
 			gameView.onAttack(attackingUnit, defendingUnit);
+			gameView.playAttack(attackingUnit);
 			int diff = defCount-defendingUnit.getCurrentSoldierCount();
 			addLog("Defender lost "+ diff+" soldiers");
 			if(checkIfBattleEnded()) {
+				gameView.getListener().handleOccupy(attackingArmy, defendingArmy.getCurrentLocation());
 				return;
 			}
 			pause.setOnFinished(e-> {
@@ -102,13 +140,17 @@ public class BattlePane extends BorderPane{
 				attackingUnit = attackingArmy.getUnits().get(randomIndex);
 				int attCount = attackingUnit.getCurrentSoldierCount();
 				gameView.onAttack(defendingUnit, attackingUnit);
+				gameView.playAttack(defendingUnit);
 				int diff2 = attCount - attackingUnit.getCurrentSoldierCount();
 				addLog("You lost "+ diff2+" soldiers");
 				attackingUnit = null; defendingUnit =null;
 			});
 			pause.playFromStart();
-		if(checkIfBattleEnded())
+		if(checkIfBattleEnded()) {
+			gameView.getListener().handleOccupy(attackingArmy, defendingArmy.getCurrentLocation());
 			return;
+		}
+			
 			
 		}else if(attackingUnit==null){
 			addLog("Please choose a unit to attack with");
@@ -125,26 +167,39 @@ public class BattlePane extends BorderPane{
 	public void showArmies() {
 		this.defendingSide.getChildren().clear();
 		this.attackingSide.getChildren().clear();
-		attackingSide.getChildren().add(new Label(attackingArmy.getArmyName()));
+		BattleArmy attackingBA = new BattleArmy(attackingArmy.getArmyName());
+		
+		attackingSide.getChildren().add(attackingBA);
+		attackingSide.setColumnHalignment(HPos.CENTER);
 		for(Unit unit: attackingArmy.getUnits()) {
-			Button unitBtn = new Button(unit.getClass().getSimpleName()+" "+unit.getLevel()+" "+unit.getCurrentSoldierCount());
+			BattleUnit unitBtn = new BattleUnit(unit);
 			attackingSide.getChildren().add(unitBtn);
-			
-			unitBtn.setOnAction(e->{	
+			attackerBattleUnits.add(unitBtn);
+			unitBtn.setOnMouseClicked(e->{	
 				this.attackingUnit=unit;
 				addLog("Your selected unit: "+attackingUnit.getClass().getSimpleName()+" "+attackingUnit.getLevel());
-				
+				deselectAllAttaching();
+				unitBtn.setStyle("-fx-border-color:red;"
+						+ "-fx-border-width: 3;"
+						+ "-fx-border-insets: 2 2 2 2");
 			});
 		}
 			
-		defendingSide.getChildren().add(new Label(defendingArmy.getArmyName()));
+		BattleArmy defendingBA = new BattleArmy(defendingArmy.getArmyName());
+		
+		defendingSide.getChildren().add(defendingBA);
+		defendingSide.setColumnHalignment(HPos.CENTER);
 		for(Unit unit: defendingArmy.getUnits()) {
-			Button unitBtn = new Button(unit.getClass().getSimpleName()+" "+unit.getLevel() +" "+unit.getCurrentSoldierCount());
+			BattleUnit unitBtn = new BattleUnit(unit);
 			defendingSide.getChildren().add(unitBtn);
-			
-			unitBtn.setOnAction(e->{	
+			defenderBattleUnits.add(unitBtn);
+			unitBtn.setOnMouseClicked(e->{	
 				this.defendingUnit=unit;
 				addLog("Your selected defender unit: "+defendingUnit.getClass().getSimpleName()+" "+defendingUnit.getLevel());
+				deselectAllDefending();
+				unitBtn.setStyle("-fx-border-color:red;"
+						+ "-fx-border-width: 3;"
+						+ "-fx-border-insets: 2 2 2 2");
 			});
 		}
 
@@ -154,6 +209,15 @@ public class BattlePane extends BorderPane{
 		setAlignment(defendingSide, Pos.CENTER);
 	}
 	
+	
+	public void deselectAllAttaching() {
+		for(BattleUnit u : attackerBattleUnits)
+			u.setStyle("-fx-border-width: 0;");
+	}
+	public void deselectAllDefending() {
+		for(BattleUnit u : defenderBattleUnits)
+			u.setStyle("-fx-border-width: 0;");
+	}
 	public void update() {
 		checkIfBattleEnded();
 		showArmies();
@@ -172,14 +236,20 @@ public class BattlePane extends BorderPane{
 		}
 		
 		exitBattle.setOnMouseClicked(e->{
+			gameView.stopBattle();
+			gameView.playClick();
 			gameView.setPane(gameView.getGamePane());
 			gameView.getGamePane().getMapView().updateMap();
 		});
 		if(ended) {
-			this.mainPane.getChildren().add(new ActionAlert(mainPane, "Battle is over", 600, 400, msg, exitBattle));
+			ActionAlert alert=new ActionAlert(mainPane, "Battle is over", 600, 400, msg, exitBattle);
+			mainPane.setAlignment(Pos.CENTER);
+			setAlignment(alert, Pos.CENTER);
+			this.mainPane.getChildren().add(alert);
 			gameView.getGamePane().getActionBox().addStatus(msg +" the battle");
 			this.attack.setDisable(true);
 			this.autoResolve.setDisable(true);
+			
 		}
 		return ended;
 	}

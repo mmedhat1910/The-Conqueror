@@ -41,17 +41,19 @@ public class MessagePane extends BorderPane{
 		this.content.setSpacing(20);
 		CustomButton cancel = new CustomButton("Cancel",'m');
 		cancel.setOnMouseClicked(e->{
+			gameView.playClick();
 			parent.getChildren().remove(this); 
 //			this.gameView.getGamePane().getActionBox().toggleEnableBtns();
 //			this.gameView.getGamePane().getInfoBar().toggleEnableBtns();
 			});
-		if(btn != null)
+		if(btn != null) {
 			this.buttonsBar.getChildren().add(btn);
 		btn.setOnMouseClicked(e->{
 			btn.getOnMouseClicked();
 //			this.gameView.getGamePane().getActionBox().toggleEnableBtns();
 //			this.gameView.getGamePane().getInfoBar().toggleEnableBtns();
 		});
+		}
 		this.buttonsBar.getChildren().add(cancel);
 		this.buttonsBar.setSpacing(10);
 //		this.gameView.getGamePane().getInfoBar().toggleEnableBtns();

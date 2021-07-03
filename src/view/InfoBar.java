@@ -56,12 +56,15 @@ public class InfoBar extends BorderPane{
 		HBox turnDataBox = new HBox();
 		turnDataBox.getChildren().add(turnLabel);
 		endTurnBtn = new CustomButton("End Turn",'s');
-		endTurnBtn.setOnMouseClicked(e->gameView.getListener().onEndTurn());
+		endTurnBtn.setOnMouseClicked(e->{
+			gameView.playClick();
+			gameView.getListener().onEndTurn();
+			});
 		turnDataBox.getChildren().add(endTurnBtn);
 		
 		Button exitBtn = new Button("Exit");
 		exitBtn.setOnAction(e->gameView.close());
-		turnDataBox.getChildren().add(exitBtn);
+//		turnDataBox.getChildren().add(exitBtn);
 		//TODO add menu here
 		
 		turnDataBox.setAlignment(Pos.CENTER);

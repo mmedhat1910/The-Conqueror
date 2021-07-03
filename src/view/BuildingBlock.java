@@ -53,16 +53,19 @@ public class BuildingBlock {
 		this.city = this.cityView.getCity();
 
 		buildBtn.setOnMouseClicked(e1 -> {
+			gameView.playClick();
 			for (CityViewListener l : this.listeners)
 				l.onBuild(this);
 		});
 
 		upgradeBtn.setOnMouseClicked(e2 -> {
+			gameView.playClick();
 			for (CityViewListener l : this.listeners)
 				l.onUpgrade(this);
 		});
 
 		recruitBtn.setOnMouseClicked(e3 -> {
+			gameView.playClick();
 			for (CityViewListener l : this.listeners)
 				l.onRecruit(this.building, this.buildingType);
 		});
@@ -71,6 +74,7 @@ public class BuildingBlock {
 		image.setPreserveRatio(true);
 		image.setFitWidth(maxWidth);
 		image.setOnMouseClicked(e -> {
+			gameView.playClick();
 			if (this.building == null) {
 				for (CityViewListener l : this.listeners)
 					l.onBuildingClicked(this.building, buildBtn);
@@ -82,6 +86,7 @@ public class BuildingBlock {
 	public Building startBuild() throws NotEnoughGoldException {
 		building = player.build(buildingType, city.getName());
 		if (building != null) {
+			gameView.playBuild();
 			image.setImage(getBlockImage());
 		}
 

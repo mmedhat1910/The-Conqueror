@@ -84,6 +84,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		buildingsToBuild.add("Stable");
 		mapBtn.setMaxWidth(gameView.getWidth()*0.08);
 		mapBtn.setOnMouseClicked(e->{
+			gameView.playClick();
 			if(this.mainPane.getChildren().contains(mapView))
 				this.mainPane.getChildren().remove(mapView);
 			this.mainPane.getChildren().add(mapView);
@@ -168,6 +169,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		choiceBox.getStyleClass().add("build-dropdown");
 		
 		buildBtn.setOnMouseClicked(e->{
+			gameView.playClick();
 			try {
 				Building b = block.startBuild();
 				block.notifyListenersOnBuild();
@@ -228,7 +230,7 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 		}
 		
 		
-		ImageView armyImg = new ImageView("file:resources/images/army/army-icon.png");
+		ImageView armyImg = new ImageView("file:resources/images/army/icons/defending.png");
 		armyImg.setFitWidth(100);
 		armyImg.setPreserveRatio(true);
 		armyImg.setOnMouseClicked(e->actionBox.onArmyClicked(this.currentCity.getDefendingArmy(), new CustomButton("Target",'l')));
@@ -243,27 +245,26 @@ public class GamePane extends BorderPane implements CityViewListener, MapViewLis
 
 	public void displayDefendingArmy() {
 		this.cityView.getDefendingArmyBox().getChildren().clear();
-		ImageView armyImg = new ImageView("file:resources/images/army/army-icon.png");
-		armyImg.setFitWidth(100);
+		ImageView armyImg = new ImageView("file:resources/images/army/icons/defending.png");
+		armyImg.setFitWidth(80);
 		armyImg.setPreserveRatio(true);
 		armyImg.setOnMouseClicked(e->actionBox.onArmyClicked(this.cityView.getCity().getDefendingArmy()));
 		this.cityView.getDefendingArmyBox().getChildren().add(armyImg);
 		for(Unit u : this.cityView.getCity().getDefendingArmy().getUnits()) {
-			ImageView img = new ImageView();
+			UnitIcon img;
 			if(u instanceof Archer)
-				img.setImage(new Image("file:resources/images/army/archer"+u.getLevel()+".png"));
+				img= new UnitIcon("archer",u.getLevel());
 			else if (u instanceof Infantry)
-				img.setImage(new Image("file:resources/images/army/infantry"+u.getLevel()+".png"));
+				img = new UnitIcon("infantry",u.getLevel());
 			else
-				img.setImage(new Image("file:resources/images/army/cavalry"+u.getLevel()+".png"));
-			img.setFitWidth(100);
-			img.setPreserveRatio(true);
+				img = new UnitIcon("cavalry",u.getLevel());
 			img.setOnMouseClicked(e->{
 				actionBox.onUnitClicked(u, relocateBtn, initArmyBtn);
 			
 			});
 			//TODO units are added here
 			this.cityView.getDefendingArmyBox().getChildren().add(img);
+			this.cityView.getDefendingArmyBox().setHgap(10);
 		}
 		
 	}

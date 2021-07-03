@@ -98,17 +98,21 @@ public class CityView extends GridPane {
 			int row = i+2;
 			this.getChildren().removeIf(node->getRowIndex(node) ==row);
 			FlowPane pane = new FlowPane();
-			ImageView icon = new ImageView("file:resources/images/army/army-icon.png");
-			icon.setFitWidth(100);
+			pane.setHgap(10);
+			ImageView icon = new ImageView("file:resources/images/army/icons/army.png");
+			icon.setFitWidth(80);
 			icon.setPreserveRatio(true);
 			CustomButton targetBtn = new CustomButton("Target",'l');
-			targetBtn.setOnMouseClicked(e->gameView.handleTargetClicked(army));
+			targetBtn.setOnMouseClicked(e->{
+				gameView.playClick();
+				gameView.handleTargetClicked(army);
+				});
 			
 			icon.setOnMouseClicked(e->gameView.getGamePane().getActionBox().onArmyClicked(army, targetBtn));
 			pane.getChildren().add(icon);
 			for(Unit u: army.getUnits()) {
-				Button unitBtn = new Button(u.getClass().getSimpleName()+" " +u.getLevel());
-				unitBtn.setOnAction(e1->{
+				UnitIcon unitBtn = new UnitIcon(u.getClass().getSimpleName().toLowerCase(), u.getLevel());
+				unitBtn.setOnMouseClicked(e1->{
 					gamePane.getActionBox().onUnitClicked(u, gamePane.getRelocateBtn());
 				});
 				pane.getChildren().add(unitBtn);

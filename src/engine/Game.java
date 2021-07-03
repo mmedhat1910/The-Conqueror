@@ -196,7 +196,8 @@ public class Game {
 	}
 	
 	public void endTurn() throws MaxSeigingPeriodException {
-		this.currentTurnCount++; //increment current number of turns
+		if(this.currentTurnCount != maxTurnCount)
+			this.currentTurnCount++; //increment current number of turns
 		//get initial values of gold and food at the beginning of the old turn
 		double totalUpkeep = 0;
 		double food = player.getFood();

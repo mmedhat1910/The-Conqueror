@@ -27,6 +27,7 @@ public class AlertPane extends BorderPane{
 		setAlignment(area, Pos.CENTER);
 		CustomButton exit = new CustomButton("Cancel",'m');
 		exit.setOnMousePressed(e-> {
+			
 			parent.getChildren().remove(this);
 		});
 		exit.setDisable(false);

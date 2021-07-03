@@ -106,6 +106,7 @@ public class ActionBox extends FlowPane implements CityViewListener, MapViewList
 		MessagePane messagePane = new MessagePane(gameView,gameView.getGamePane().getMainPane(), "Choose Army", 600, 500,
 				relocateFromMessage, messageContent);
 		relocateFromMessage.setOnMouseClicked(e1 -> {
+			gameView.playClick();
 			try {
 				Army army;
 				if(armyNames.getValue().equals("Defending Army")) {

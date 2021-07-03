@@ -37,7 +37,7 @@ public class ActionAlert extends BorderPane{
 		buttonsBar.setSpacing(10);
 //		setAlignment(buttonsBar, Pos.CENTER);
 		this.buttonsBar.getChildren().addAll(btns);
-		this.content = new TextArea(msg +"\n Should you choose to:");
+		this.content = new TextArea(msg);
 		this.content.setEditable(false);
 		this.content.setWrapText(true);
 //		Button exitBtn = new Button("Cancel (SHEELO)");

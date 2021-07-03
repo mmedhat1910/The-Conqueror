@@ -1,8 +1,14 @@
 package view;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.io.File;
 import controllers.ControllerListener;
 import engine.City;
 import engine.Distance;
@@ -13,6 +19,8 @@ import exceptions.MaxCapacityException;
 import exceptions.TargetNotReachedException;
 import javafx.application.Application;
 import javafx.collections.MapChangeListener;
+import javafx.fxml.Initializable;
+import javafx.scene.ImageCursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,10 +30,13 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import units.Archer;
 import units.Army;
+import units.Infantry;
 import units.Unit;
 
-public class GameView extends Stage implements ControllerListener {
+public class GameView extends Stage implements ControllerListener, AudioPlayerController {
 	private Scene gameScene;
 	private GameViewListener listener;
 
@@ -47,14 +58,48 @@ public class GameView extends Stage implements ControllerListener {
 	private double food;
 	private double treasury;
 	private int turnCount;
+	
+	
+	MediaPlayer mainTrack = audioPlayer(soundtrackPath);
+	MediaPlayer battleTrack = audioPlayer(soundtrackPath);
+	
 
 	public GameView(double width, double height, boolean fullScreen) {
 
+		
+		
+		playMainTrack();
+		
 		this.width = width;
 		this.height = height;
 		this.playerNamePane = new PlayerNamePane(this);
 		this.chooseCitypane = new ChooseCityPane(this);
+		
+		Army cArmy = new Army("Cairo");
+		Army rArmy = new Army("Rome");
+		Archer archerC = new Archer(2, 50, 1, 1, 1);
+		archerC.setParentArmy(cArmy);
+		Archer archerR = new Archer(2, 50, 1, 1, 1);
+		archerC.setParentArmy(rArmy);
+		cArmy.getUnits().add(archerC);
+		rArmy.getUnits().add(archerR);
+		rArmy.getUnits().add(archerR);
+		rArmy.getUnits().add(archerR);
+		rArmy.getUnits().add(archerR);
+		rArmy.getUnits().add(archerR);
+		rArmy.getUnits().add(archerR);
+		rArmy.getUnits().add(archerR);
+		rArmy.getUnits().add(archerR);
+		rArmy.getUnits().add(archerR);
+		rArmy.getUnits().add(archerR);
+		rArmy.getUnits().add(archerR);
+		rArmy.getUnits().add(archerR);
+		cArmy.setArmyName("Cairo Army");
+		rArmy.setArmyName("Rome Army");
+		this.battlePane = new BattlePane(this, rArmy, cArmy);
+		
 		this.gameScene = new Scene(playerNamePane);
+		gameScene.getStylesheets().add("file:resources/styles/main.css");
 
 		this.logo = new Image("file:resources/images/logo/logo.png");
 
@@ -62,11 +107,13 @@ public class GameView extends Stage implements ControllerListener {
 		this.setWidth(width);
 		this.setHeight(height);
 		this.setTitle("The Conqueror");
-		gameScene.getStylesheets().add("file:resources/styles/main.css");
 
 		this.setFullScreen(fullScreen);
 //		stage.setResizable(false);
 		this.setScene(gameScene);
+		ImageCursor cursor = new ImageCursor(new Image("file:resources/images/icons/cursor.png"));
+		
+//		this.getScene().setCursor(cursor);
 		this.show();
 	}
 
@@ -113,6 +160,7 @@ public class GameView extends Stage implements ControllerListener {
 				targetFromMsg, msgContent);
 		gamePane.getMainPane().getChildren().add(chooseTargetCity);
 		targetFromMsg.setOnMouseClicked(e -> {
+			playClick();
 			String targetCity = cityChoices.getValue();
 			gamePane.getMainPane().getChildren().remove(chooseTargetCity);
 			gamePane.getActionBox().getDetailsBox().setArmy(army);
@@ -148,6 +196,7 @@ public class GameView extends Stage implements ControllerListener {
 		laySeigeBtn.setOnMouseClicked(e -> System.out.println("Laysiege clicked"));
 		battleBtn.setOnMouseClicked(e -> System.out.println("Enter Battle"));
 		laySeigeBtn.setOnMouseClicked(e -> {
+			playClick();
 			try {
 				this.listener.handleLaySeige(army, city);
 				gamePane.getMainPane().getChildren().remove(laySeigeMessage);
@@ -160,6 +209,7 @@ public class GameView extends Stage implements ControllerListener {
 			}
 		});
 		battleBtn.setOnMouseClicked(e -> {
+			playClick();
 			gamePane.getMainPane().getChildren().remove(laySeigeMessage);
 			this.enterBattle(army, city);
 		});
@@ -170,7 +220,7 @@ public class GameView extends Stage implements ControllerListener {
 	}
 
 	public void enterBattle(Army a, City c) {
-		
+		playBattle();
 		this.battlePane = new BattlePane(this, a, c.getDefendingArmy());
 		setPane(battlePane);
 	}
@@ -208,9 +258,14 @@ public class GameView extends Stage implements ControllerListener {
 	public void startGame() {
 		this.gamePane = new GamePane(this, this.getControlledCities().get(0));
 		intitiateGamePane();
+		this.stopMainTrack();
 //		System.out.println(this.getTreasury());
 	}
 
+	
+	
+	
+	
 	public void updateInfoBar() {
 		this.gamePane.getInfoBar().update();
 	}
@@ -354,6 +409,112 @@ public class GameView extends Stage implements ControllerListener {
 
 	public void setDistances(ArrayList<Distance> distances) {
 		this.distances = distances;
+	}
+
+	
+
+	@Override
+	public void playMainTrack() {
+		
+		mainTrack.play();
+		mainTrack.setOnEndOfMedia(new Runnable() {
+		       public void run() {
+		    	   mainTrack.seek(Duration.ZERO);
+		       }
+		   });
+		mainTrack.play();
+		mainTrack.setVolume(0.5);
+	}
+
+	@Override
+	public void playBattle() {
+		battleTrack.seek(Duration.ZERO);
+		battleTrack.play();
+		battleTrack.setVolume(0.5);
+	}
+
+	@Override
+	public void playClick() {
+		audioPlayer(clickPath).play();
+		
+	}
+
+	@Override
+	public void playBuild() {
+		audioPlayer(buildPath).play();
+		
+	}
+
+	@Override
+	public void playAttack(Unit unit) {
+		if(unit instanceof Archer)
+			audioPlayer(archerPath).play();
+		else if (unit instanceof Infantry)
+			audioPlayer(swordPath).play();
+		else
+			audioPlayer(horsePath).play();
+		
+	}
+
+	@Override
+	public void playWon() {
+		audioPlayer(winPath).play();
+		
+	}
+
+	@Override
+	public void playLost() {
+		audioPlayer(lostPath).play();
+		
+	}
+
+	@Override
+	public MediaPlayer audioPlayer(String path) {
+		Media media = new Media(new File(path).toURI().toString());
+		return new MediaPlayer(media);
+	}
+
+	@Override
+	public void stopMainTrack() {
+		mainTrack.stop();
+		
+	}
+
+	@Override
+	public void stopBattle() {
+		
+		battleTrack.stop();
+		
+	}
+
+	@Override
+	public void stopClick() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopBuild() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopAttack() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopWon() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopLost() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
